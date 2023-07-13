@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Modulo di Recruiting di Fermi Notify.">
+    <meta propety="og:image" content="https://ferminotify.me/img/og-logo.png">
+    <meta property="og:description" content="Fermi Notify è un servizio non ufficiale dell'IS &quot;E. Fermi&quot; Mantova che invia delle notifiche per avvisare delle variazioni dell'orario del calendario giornaliero.">
+    <meta property="og:title" content="Recruiting · Fermi Notify">
+    <meta property="og:type" content="website">
+	<link rel="icon" type="image/x-icon" href="/img/favicon-black.png">
+    <script src="/js/hamburger.js" defer></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="/css/cards.css" type="text/css">
+	<link rel="stylesheet" href="/css/normalize.css" type="text/css">
+    <link rel="stylesheet" href="/css/alertbanner.css" type="text/css">
+    <link rel="stylesheet" href="/css/general.css" type="text/css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<script src="https://kit.fontawesome.com/95ae55bd9a.js" crossorigin="anonymous"></script>
+	<title>Recruiting · Fermi Notify</title>
+	<style>
+		#form{
+			width: 100%;
+			min-height: 288.33px;
+		}
+		.form-iframe{height:1390px;color:#fff}@media screen and (max-width:600px){.form-iframe{height:1430px}}@media screen and (max-width:560px){.form-iframe{height:1470px}}@media screen and (max-width:495px){.form-iframe{height:1500px}}@media screen and (max-width:494px){.form-iframe{height:1505px}}@media screen and (max-width:449px){.form-iframe{height:1530px}}@media screen and (max-width:440px){.form-iframe{height:1600px}}@media screen and (max-width:375px){.form-iframe{height:1630px}}@media screen and (max-width:345px){.form-iframe{height:1660px}}@media screen and (max-width:332px){.form-iframe{height:1680px}}@media screen and (max-width:318px){.form-iframe{height:1700px}}@media screen and (max-width:306px){.form-iframe{height:1730px}}@media screen and (max-width:287px){.form-iframe{height:1780px}}@media screen and (max-width:283px){.form-iframe{height:1800px}}@media screen and (max-width:281px){.form-iframe{height:1830px}}@media screen and (max-width:275px){.form-iframe{height:1850px}}@media screen and (max-width:273px){.form-iframe{height:1900px}}@media screen and (max-width:263px){.form-iframe{height:1930px}}@media screen and (max-width:245px){.form-iframe{height:1980px}}@media screen and (max-width:236px){.form-iframe{height:2030px}}@media screen and (max-width:220px){.form-iframe{display:none}}
+		.msg{
+			margin: 25px 0 25px 0;
+			text-align: center;
+			line-height: 1.5;
+		}
+		.card-textfaderight .fas{
+			font-size: 20px;
+		}
+		.grid-center-col2{
+			gap: 15px;
+		}
+	</style>
+</head>
+<body>
+
+	<script>
+		var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		if(width <= 220) // redirect to google.com
+			window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSeV5IQi_xbvQ32l2oNzIwT2hC5Hq1yb5Ymgbx2ynpPZeSakmA/viewform?usp=sf_link";
+	</script>
+
+	<%- include('../includes/navbar-min.ejs') %>
+
+	<div class="minHeight-100vh">
+
+		<div class="iframe-container">
+			<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeV5IQi_xbvQ32l2oNzIwT2hC5Hq1yb5Ymgbx2ynpPZeSakmA/viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0" scrolling="no" onload="loaded();" id="form" class="form-iframe">Caricamento…</iframe>
+		</div>
+
+		<div class="content">
+			<div class="content-inner">
+				<p class="msg">Hai problemi a visualizzare il form? Clicca <a href="https://docs.google.com/forms/d/e/1FAIpQLSeV5IQi_xbvQ32l2oNzIwT2hC5Hq1yb5Ymgbx2ynpPZeSakmA/viewform?usp=sf_link" class="highlighted-text">qui</a>.</p>
+				<div class="grid-center-col2">
+                    <a class="highlighted-text text-center" href="/">
+                        <div class="card-textfaderight flex-center">
+                            <i class="fas fa-home"></i>
+							<p class="text">Homepage</p>
+                        </div>
+                    </a>
+                    <a class="highlighted-text text-center" href="./feedback">
+                        <div class="card-textfaderight flex-center">
+                            <i class="fas fa-comment"></i>
+                            <p class="text">Feedback</p>
+                        </div>
+                    </a>
+                </div>
+			</div>
+		</div>
+
+	</div>
+	 
+	<%- include('../includes/footer.ejs') %>
+
+	<script>
+		var loadCounter = 0;
+
+		function loaded() {
+			loadCounter += 1;
+
+			if (loadCounter === 2) $("#form").removeClass("form-iframe");
+			if (loadCounter === 3){
+				$("#form").addClass("form-iframe");
+				loadCounter = 1;
+			}
+		}
+	 </script>
+</body>
+</html>

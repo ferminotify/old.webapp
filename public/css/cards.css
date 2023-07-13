@@ -1,0 +1,71 @@
+/***** CARD 1 *****/
+.card-1{
+	width: calc(100% - 40px);
+	height: 100%;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	padding: 20px;
+	margin-bottom: 20px;
+	transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), background-color 0.4s cubic-bezier(0.2, 0, 0, 1), color 0.4s cubic-bezier(0.2, 0, 0, 1);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+
+	z-index: 0;
+	overflow: hidden;
+	position: relative;
+}
+.card-1:hover{
+	transform: translateY(-5px);
+}
+.card-1:before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	top: -100%;
+	right: -25px;
+	height: 32px;
+	width: 32px;
+	border-radius: 32px;
+	transform: scale(1);
+	transform-origin: 50% 50%;
+	transition: transform 0.25s cubic-bezier(.17,.67,.83,.67);
+}
+.card-1:hover:before {
+	transform: scale(33);
+}
+
+/***** CARD TEXT FADE RIGHT *****/
+.card-textfaderight *{
+	transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+.card-textfaderight .text{
+	opacity: 0;
+	text-decoration: underline;
+}
+a:has(> .card-textfaderight){
+	text-decoration: none;
+}
+.card-textfaderight .fas{
+	position: absolute;
+}
+.card-textfaderight:hover .fas{
+	transform: translateX(-5px);
+	opacity: 0;
+}
+.card-textfaderight:hover .text{
+	opacity: 1;
+	transform: translateX(5px);
+}
+@media (any-hover: none){
+	.card-textfaderight .fas{
+		position: relative;
+		padding-right: 5px;
+	}
+	.card-textfaderight .text{
+		opacity: 1;
+		transform: translateX(0);
+	}
+}

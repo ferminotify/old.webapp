@@ -1,0 +1,828 @@
+<!--
+
+
+─────────────────────
+───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
+───█▒▒░░░░░░░░░▒▒█───
+────█░░█░░░░░█░░█────
+─▄▄──█░░░▀█▀░░░█──▄▄─
+█░░█─▀▄░░░░░░░▄▀─█░░█
+█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+█░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█
+█░░║║║╠─║─║─║║║║║╠─░░█
+█░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
+█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
+─────────────────────
+─────────────────────
+─────────────────────
+
+
+-->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fermi Notify è un servizio non ufficiale dell'IS &quot;E. Fermi&quot; Mantova che invia delle notifiche per avvisare delle variazioni dell'orario del calendario giornaliero.">
+    <meta propety="og:image" content="https://ferminotify.me/img/og-logo.png">
+    <meta property="og:description" content="Fermi Notify è un servizio non ufficiale dell'IS &quot;E. Fermi&quot; Mantova che invia delle notifiche per avvisare delle variazioni dell'orario del calendario giornaliero.">
+    <meta property="og:title" content="Fermi Notify">
+    <meta property="og:type" content="website">
+    <script src="/js/hamburger.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="/img/favicon-black.png">
+    <!-- css -->
+    <link rel="stylesheet" href="/css/form.css" type="text/css">
+    <link rel="stylesheet" href="/css/cards.css" type="text/css">
+    <link rel="stylesheet" href="/css/buymeacoffee.css" type="text/css">
+    <link rel="stylesheet" href="/css/general.css" type="text/css">
+    <link rel="stylesheet" href="/css/normalize.css" type="text/css">
+    <link rel="stylesheet" href="/css/alertbanner.css" type="text/css">
+    <link rel="stylesheet" href="/css/cercaeventi.css" type="text/css">
+    <link rel="stylesheet" href="/css/index.css" type="text/css">
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/95ae55bd9a.js" crossorigin="anonymous"></script>
+    <!-- Material Icon -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- jQuery 3.6.0 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3511194049429500" crossorigin="anonymous"></script>
+
+    <title>Fermi Notify</title>
+
+    <link rel="stylesheet" href="/css/slick-slider.css">
+
+</head>
+<body>
+
+    <%- include('includes/navbar-min.ejs') %>
+    
+    <div class="minHeight-100vh">
+
+        <div class="container-title">
+            <div class="container-mid">
+                <div class="container-subtitle">
+                    <p class="main-subtitle1 selected-highlight">
+                        &gt; inserisci il tag <br>
+                    </p>
+                </div>
+                <div class="container-subtitle">
+                    <p class="main-subtitle2 selected-highlight">
+                        &gt; ricevi la notifica <br>
+                    </p>
+                </div>
+                <div class="container-subtitle">
+                    <p class="main-subtitle3 selected-highlight">
+                        &gt; rimani aggiornato <br>
+                    </p>
+                </div>
+                <div class="container-subtitle selected-highlight">
+                    <p class="main-subtitle4">
+                        &gt <span class="highlighted-text">sempre</span>.
+                    </p>
+                </div>
+                <!--<div class="container-subtitle">
+                    <p class="main-subtitle5 selected-highlight">
+                        &gt;&nbsp;<input type="text" class="creative-input" maxlength="20" autofocus> onblur="this.focus()"
+                    </p>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="content cercaEventi-container" id="CercaEventi">
+            
+            <div class="cercaEventi">
+                <div class="cercaEventi-title">
+                    <i class="fa-solid fa-calendar-days" style="font-size: 2em; margin-right: 15px"></i>
+                    <h1>Cerca <span class="highlighted-text">eventi</span></h1>
+                </div>
+                <div class="cercaEventi-input">
+                    <input type="text" name="keyword" placeholder="Es. 4CIIN" class="keyword-input" id="cercaEventiInput" style="text-transform: uppercase;" onkeyup="if (event.keyCode === 13) { cercaEventi(); }">
+                    <script>
+                        $(function() {
+                            $('#cercaEventiInput').keyup(function() {
+                                this.value = this.value.toLocaleUpperCase();
+                            });
+                        });
+                    </script>
+                    <button class="addButton" id="submit-btn" onclick="cercaEventi()"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="section cercaEventi-results">
+
+                <div class="cercaEventi-keywords-list" style="display: none;"></div>
+
+                <div class="events-content-container">
+                    <div id="events-loading" style="display: none;">
+                        <div class="lds-grid">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+
+                    <div id="noevents" style="text-align: center; margin: 25px 0; display: none;"></div>
+
+                    <!-- today -->
+                    <div id="events-0" class="events-container">
+                        <h3 class="bigSectionSubtitle events-date" id="events-0-date"></h3>
+                        <div id="events-0-eventslist" class="events-list"></div>
+                    </div>
+                    <!-- tomorrow -->
+                    <div id="events-1" class="events-container">
+                        <h3 class="bigSectionSubtitle events-date" id="events-1-date"></h3>
+                        <div id="events-1-eventslist" class="events-list"></div>
+                    </div>
+                    <!-- dopotomorrow -->
+                    <div id="events-2" class="events-container">
+                        <h3 class="bigSectionSubtitle events-date" id="events-2-date"></h3>
+                        <div id="events-2-eventslist" class="events-list"></div>
+                    </div>
+                    <!-- dopodopotomorrow -->
+                    <div id="events-3" class="events-container">
+                        <h3 class="bigSectionSubtitle events-date" id="events-3-date"></h3>
+                        <div id="events-3-eventslist" class="events-list"></div>
+                    </div>
+                </div>
+            
+                <p class="sub-description maggioriInfo-container"><span id="maggioriInfo"><i class="fa-solid fa-circle-info"></i> <span style="text-decoration: underline; text-decoration-color: var(--highlighted-color)">Maggiori informazioni</span></span></p>
+                <div id="cercaEventiInfo" style="display: none;">
+                    <p class="cercaEventi-description sub-description">Cerca nel <span class="highlighted-text">calendario giornaliero</span> una <span class="highlighted-text">parola chiave</span> e mostra le variazioni previsti nei prossimi 3 giorni.</p>
+                    <ul><li class="sub-description" style="padding: 0; line-height: 1;">Esempio: con <code>4CIIN</code> mostra le variazioni della classe <i>4CIIN</i>.</li></ul>
+                    <p class="cercaEventi-description sub-description">Fai attenzione alla <span class="highlighted-text">formattazione</span> della parola: dev'essere uguale a quella scritta nel calendario giornaliero!</p>
+                    <p class="cercaEventi-description">Usa <span class="mono">*</span> per mostrare tutte le variazioni.</p>
+                </div>
+            
+            </div>
+
+            <!-- COS'È FERMI NOTIFY -->
+            <div class="section">
+                <h1>Cos'&egrave; <span class="highlighted-text">Fermi Notify</span>?</h1>
+                <p class="sub-description">Fermi Notify &egrave; un servizio <span class="highlighted-text">non ufficiale</span> per l'Istituto Superiore "Enrico Fermi" di Mantova che invia delle notifiche via email o via Telegram quando viene aggiunto una variazione sul <a href="https://www.fermimn.edu.it/variazioni-orario/" style="color: #fff">calendario giornaliero</a>, come una sostituzione o un cambio aula.</p>
+            </div>
+
+        </div>
+        
+        <!-- COME FUNZIONA -->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <div class="slider-container slideshow-box-hp" id="ComeFunziona">
+        <div class="slideshow-cards">
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-cogs"></i></p>
+                    <div class="slider-card-text">
+                        <h1>Come funziona<span class="highlighted-text">?</span></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-tags"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Inserisci la keyword</h2>
+                        <p>Inserisci le parole chiavi che ti riguardano</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-calendar-plus"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Nuovo evento</h2>
+                        <p>Cerchiamo automaticamente sul calendario giornaliero</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-exclamation-circle"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Ti avvisiamo</h2>
+                        <p>Se ci sono eventi o variazioni che ti interessano</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-bell"></i></p>
+                    <div class="slider-card-text">
+                        <h2 class="sliderTitolo">Tipi di notifiche</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fa-solid fa-paper-plane"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Daily Notification</h2>
+                        <p>Notifica delle 6:00 che racchiude gli eventi e le variazioni in programma</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fa-solid fa-hourglass-start"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Last Minute Notification</h2>
+                        <p>Notifica istantanea per eventi o modifiche aggiunti durante la giornata</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-compass"></i></p>
+                    <div class="slider-card-text">
+                        <h2 class="sliderTitolo">Esplora le funzionalit&agrave;</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-search"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Cerca Eventi</h2>
+                        <p>Cerca gli eventi e le variazioni dell'orario previsti per i prossimi 3 giorni</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-sliders-h"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Personalizza i canali</h2>
+                        <p>Scegli quale canale di comunicazione preferisci</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fa-brands fa-telegram"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Telegram</h2>
+                        <p>Ti avvisiamo tramite il nostro bot su Telegram</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fas fa-envelope"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Email</h2>
+                        <p>Ti avvisiamo con una semplice ed efficace email</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card">
+                    <p class="slider-card-icon"><i class="fa-solid fa-circle-question"></i></p>
+                    <div class="slider-card-text">
+                        <h2>Dubbi<span class="highlighted-text">?</span></h2>
+                        <p>Visita la FAQ o contattaci <a href="mailto:master@ferminotify.me" style="color: #000">master@ferminotify.me</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-card" style="grid-template-columns: 1fr;">
+                    <img src="/img/favicon-black.png" alt="FERMI NOTIFY" style="max-width: 100%; max-height: 100%; transform: translateX(3px) translateY(-3px);;">
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                $('.slideshow-cards').slick({
+                    dots: false,
+                    infinite: false,
+                    speed: 500,
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    easing: 'easeOut',
+                    centerMode: true,
+                    responsive: [
+                        {
+                            breakpoint: 1200,
+                            settings: {
+                                slidesToShow: 2,
+                                slidesToScroll: 1,
+                                dots: false,
+                                centerMode: false
+                            }
+                        },
+                        {
+                            breakpoint: 900,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1,
+                                dots: false,
+                                centerMode: false
+                            }
+                        }
+                    ]
+                });
+
+                /*$( ".slideshow-cards" ).mousedown(function() {
+                    $(this).addClass('mousedown');
+                });
+                $( ".slideshow-cards" ).mouseup(function() {
+                    $(this).removeClass('mousedown');
+                });*/
+                $(document).ready(() => {
+                    $('.slideshow-cards .slick-list .slick-track').mousedown(function () {
+                        $('.slideshow-cards').addClass('mousedown');
+                    });
+                    $('body').mouseup(function () {
+                        $('.slideshow-cards').removeClass('mousedown');
+                    });
+                });
+            });
+        </script>
+    </div>
+
+
+
+
+
+
+
+        <div class="content">
+            <!-- VISIT FAQ -->
+            <div class="section text-center">
+                Visita la <a href="./faq" style="text-decoration-color: var(--highlighted-color);"><span class="highlighted-text">FAQ</span></a> per maggiori informazioni.
+            </div>
+
+            <!-- FEEDBACK & RECRUITING -->
+            <div class="section">
+
+                <h1 style="text-align: center;"><span class="highlighted-text">Contribuisci</span> a Fermi Notify</h1>
+
+                <div class="grid-center-col2 index-form">
+                    <a class="flex-col-center index-form-card-container" href="./feedback">
+                        <div class="card-1">
+                            <i class="fas fa-comment"></i>
+                            <h3>Feedback & suggerimenti</h3>
+                        </div>
+                    </a>
+                    <a class="flex-col-center index-form-card-container" href="./recruiting">
+                        <div class="card-1">
+                            <i class="fas fa-users"></i>
+                            <h3>Candidati per il team</h3>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- LOGIN/SIGN UP/LOGGED AS -->
+            <div class="section">
+                <% if(isLogged){ %> 
+                    <div class="login-iscriviti-dashboard-container">
+                        <span class="logged-as">Loggato come <span class="highlighted-text"><%= user %></span></span>
+                        <div class="login-iscriviti-dashboard-btn">
+                            <a class="btn-nobg" href="./logout">Logout</a>
+                            <a class="btn-bg margin-l15px" href="./dashboard">Dashboard</a>
+                        </div>
+                    </div>
+                <% }else{ %>
+                    <div class="login-iscriviti-dashboard-container">
+                        <div class="login-iscriviti-dashboard-btn">
+                            <a class="btn-nobg" href="./login">Login</a>
+                            <a class="btn-bg margin-l15px" href="./register">Registrati</a>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- BUY ME A COFFEE -->
+            <div class="section coffee-container">
+                <a class="coffee-button" href="https://www.buymeacoffee.com/ferminotify">
+                <h1 class="coffee-arrow">&gt;</h1>
+                <div class="coffee-link">
+                    <h1 class="coffee-icon"><i class="fa-solid fa-mug-hot"></i></h1>
+                    <div class="coffee-text">
+                        <h2 class="coffee-text-big">OFFRICI UN CAFF&Egrave;</h2>
+                        <span class="coffee-text-small">e supporta il progetto</span>
+                    </div>
+                </div>
+                <h1 class="coffee-arrow">&lt;</h1>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('includes/footer-min.ejs') %>
+
+    <%- include('includes/cookie-min.ejs') %>
+
+    <% if (typeof message !=='undefined' ) { %>
+        <div id="alertbanner" class="successbanner">
+            <p id="alertmessage"><i class="fa-solid fa-check"></i>
+                <%= message %>
+            </p>
+        </div>
+        <script>
+            document.getElementById("alertbanner").style.animation = "showAlert 0.5s ease-in-out forwards";
+        </script>
+    <% } %>
+
+    <!--
+    <script>
+        $(function () {
+            $('[autofocus]').focus()
+        });
+
+        var input = document.querySelector(".creative-input");
+        input.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.querySelector(".creative-input").value = "";
+            }
+        });
+    </script>
+    -->
+
+    <!--
+    <script>
+        var height = window.innerHeight;
+        var width = window.innerWidth;
+        if (height > 500) {
+            setTimeout(function () {
+                $(".container-title").css("height", "min(375px, 90vw)");
+                $(".container-title").css("min-height", "auto");
+                $(".container-title").css("transform", "translateY(0)");
+            }, 4000);
+        }
+    </script>
+    -->
+
+    <!-- cerca eventi -->
+    <script>
+        /*
+         * constrains:
+         * - event must have either start.dateTime & end.dateTime or start.date & end.date (no start.date and end.dateTime)
+         */
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSn-iVUb73XGXN7qWU0S2njYO8yl8LFv0V-1a3VTU7mPB6rJUqYasGPJcmWyc1wGvjDd7IWH3qci75l/pub?gid=0&single=true&output=csv";
+        
+        var keywords = [];
+
+        // get saved keywords
+        if(localStorage.getItem("cookieConsent") == "true") if(localStorage.getItem("keywords") != null) keywords = JSON.parse(localStorage.getItem("keywords"));
+
+        var eventRunning;
+
+        printKeywords();
+        events();
+
+        function printKeywords(){
+            $("#noevents").html("");
+            $("#noevents").hide();
+            $(".cercaEventi-keywords-list").html("");
+            $(".events-container").hide();
+            $("#events-loading").show();
+            $(".events-list").html("");
+            keywords.forEach(kw => {
+                $(".cercaEventi-keywords-list").append("<span class='cercaEventi-keyword' onclick='removeKeyword(this)'>" + kw + " <i class='fa-solid fa-delete-left'></i></span>");
+            });
+            
+            if(keywords.length > 0) $(".cercaEventi-keywords-list").show();
+            else $(".cercaEventi-keywords-list").hide();
+
+            if(localStorage.getItem("cookieConsent") == "true") localStorage.setItem("keywords", JSON.stringify(keywords));
+        }
+
+        // adds a keyword to the list
+        function cercaEventi(){
+
+            if($("#cercaEventiInput").val() == "") return;
+
+            // sanitize input
+            /*
+             * /\s+/g all whitespace replaced with single space // commented - allows multiple spaces (whitespace: pre in css)
+             * /</g and />/g replace < and > with &lt; and &gt;
+             * .trim() removes whitespace from start and end of string
+             */
+            //let inputkw = $("#cercaEventiInput").val().replace(/\s+/g, ' ').replace(/</g, "&lt;").replace(/>/g, "&gt;").trim();
+            let inputkw = $("#cercaEventiInput").val().replace(/</g, "&lt;").replace(/>/g, "&gt;").trim();
+            
+            if(!keywords.includes(inputkw)){
+                keywords.push(inputkw);
+            }
+            printKeywords();
+            //$("#cercaEventiInput").val("");
+            
+            events();
+        }
+
+        function removeKeyword(elem){
+
+            var keyword = $(elem).text();
+            keyword = keyword.substring(0, keyword.length - 1);
+            keywords.splice(keywords.indexOf(keyword), 1);
+            $(elem).remove();
+            
+            printKeywords();
+
+            events();
+        }
+
+        var isRunning = false;
+        function events(){
+            (async function fetchData() {
+                if(isRunning) return;
+                isRunning = true;
+                try {
+                    $('#noevents .error-container').remove();
+                    $("#events-loading").show();
+                    const response = await fetch(url);
+                    const data = await response.text();
+                    $("#events-loading").hide();
+                    printEvents(data);
+                } catch (error) {
+                    console.error("Merda.\n" + error.stack);
+                    // print error in the page
+                    $("#noevents").append("<div class='error-container'><p class='errorText'><span class='errorTitle'>Errore nel caricamento degli eventi</span> <span class='errorRetry btn-nobg' onclick='events()'><span class='material-symbols-outlined'>autorenew</span> <span>Riprova</span></span></p><p class='errorDescription'>[ " + error.stack + " ]<br><a class='highlighted-text' href='mailto:master@ferminotify.me?subject=Errore caricamento eventi&body=Ciao,%0D%0AHo riscontrato questo errore durante il caricamento degli eventi%0D%0A%0D%0A" + error.stack + "%0D%0A%0D%0Acon le keywords:%0D%0A" + keywords + ".%0D%0A%0D%0A%0D%0A" + moment().format("HH:mm DD/MM/YYYY") + "' style='margin-left: 5px;'><i class='fa-solid fa-circle-exclamation'></i> Clicca qui per segnalare il problema</a><br>master@ferminotify.me</p></div>");
+                    $("#noevents").show();
+                    $("#events-loading").hide();
+                }
+                isRunning = false;
+            })();
+        }
+
+        function printEvents(data) {
+
+            function getEventHTML(data, startDateString, endDateString) {
+                if (endDateString !== undefined) {
+                    return `
+                        <div class="event ${eventRunning}">
+                        <p class="event-title">${data}</p>
+                            <div class="event-time">
+                                <p class="event-time-start">
+                                    <span class="start-end-text"><span class="material-symbols-outlined">start</span></span>
+                                    <span>${startDateString}</span>
+                                </p>
+                                <p class="event-time-end">
+                                    <span class="start-end-text"><span class="material-symbols-outlined mirrorElement">start</span></span>
+                                    <span>${endDateString}</span>
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="event ${eventRunning}">
+                            <p class="event-title">${data}</p>
+                            <div class="event-time">
+                                <p class="event-time-start">
+                                    <span class="start-end-text"><span class="material-symbols-outlined">schedule</span></span>
+                                    <span>${startDateString}</span>
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+            }
+
+            var events = csv2json(data); // events csv --> json
+
+            console.log(events);
+
+            const weekDay=["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
+
+            const daysShown = 4; // 0 = today, 1 = tomorrow, 2 = day after tomorrow, 3 = day after day after tomorrow
+
+            for (let i = 0; i < daysShown; i++) {
+                const html = `<span style='color: var(--highlighted-color)'>${getDayDescription(i)}</span><span>${weekDay[moment().add(i, 'days').isoWeekday()]} ${moment().add(i, 'days').format("DD/MM/YYYY")}</span>`;
+                $(`#events-${i}-date`).html(html);
+            }
+
+            function getDayDescription(daysAhead) {
+                switch (daysAhead) {
+                    case 0:
+                        return 'Oggi';
+                    case 1:
+                        return 'Domani';
+                    case 2:
+                        return 'Dopodomani';
+                    default:
+                        return `Tra ${daysAhead} giorni`;
+                }
+            }
+
+            var printedUIDs = []; // array of events already printed
+
+            var filteredEvents = []; // array of events filtered by keywords
+
+            kwPrintAll = "*";
+
+            keywords.forEach(kw => {
+
+                if(kw == kwPrintAll) // special kw to print all events
+                    filteredEvents = filteredEvents.concat(events.filter(event => (moment(event["end.dateTime"], "YYYY-MM-DDTHH:mm:ss").isAfter(moment().startOf('day')) || moment(event["end.date"], "YYYY-MM-DD").isAfter(moment().startOf('day')))));
+                else
+                    // regex --> kw followed by a non-word character
+                    // filtra eventi per keyword e per data (deve finire dopo oggi)
+                    filteredEvents = filteredEvents.concat(events.filter(event => (RegExp("\\b" + kw + "\\b", "i").test(event.summary) && ( moment(event["end.dateTime"], "YYYY-MM-DDTHH:mm:ss").isAfter(moment().startOf('day')) || moment(event["end.date"], "YYYY-MM-DD").isAfter(moment().startOf('day'))))));
+
+                console.log(kw);
+                console.log(filteredEvents);
+
+            });
+
+            if(filteredEvents.length == 0 && keywords.length > 0){
+                $("#noevents").append("<p style='color: var(--highlighted-color);'>Nessun evento trovato</p>");
+                $("#noevents").show();
+            }
+            
+            // sort events by date
+            filteredEvents.sort(function(a, b) {
+                if (a["start.dateTime"] != null && b["start.dateTime"] != null) { // if both events have a start date and time
+                    return moment(a["start.dateTime"], "YYYY-MM-DDTHH:mm:ss").diff(moment(b["start.dateTime"], "YYYY-MM-DDTHH:mm:ss"));
+                } else if (a["start.dateTime"] != null && b["start.dateTime"] == null) { // if a has a start date and time and b doesn't
+                    return moment(a["start.dateTime"], "YYYY-MM-DDTHH:mm:ss").diff(moment(b["start.date"], "YYYY-MM-DD"));
+                } else if (a["start.dateTime"] == null && b["start.dateTime"] != null) { // if b has a start date and time and a doesn't
+                    return moment(a["start.date"], "YYYY-MM-DD").diff(moment(b["start.dateTime"], "YYYY-MM-DDTHH:mm:ss"));
+                } else { // if both events don't have a start date and time
+                    return moment(a["start.date"], "YYYY-MM-DD").diff(moment(b["start.date"], "YYYY-MM-DD"));
+                }
+            });
+
+            // sort events that have the same start date by end date
+            filteredEvents.sort(function(a, b) {
+                if (a["start.dateTime"] != null && b["start.dateTime"] != null) { // if both events have a start date and time
+                    if (moment(a["start.dateTime"], "YYYY-MM-DDTHH:mm:ss").isSame(moment(b["start.dateTime"], "YYYY-MM-DDTHH:mm:ss"))) { // if both events have the same start date and time
+                        return moment(a["end.dateTime"], "YYYY-MM-DDTHH:mm:ss").diff(moment(b["end.dateTime"], "YYYY-MM-DDTHH:mm:ss"));
+                    }
+                } else if (a["start.dateTime"] != null && b["start.dateTime"] == null) { // if a has a start date and time and b doesn't
+                    if (moment(a["start.dateTime"], "YYYY-MM-DDTHH:mm:ss").isSame(moment(b["start.date"], "YYYY-MM-DD"))) { // if both events have the same start date
+                        return moment(a["end.dateTime"], "YYYY-MM-DDTHH:mm:ss").diff(moment(b["end.date"], "YYYY-MM-DD"));
+                    }
+                } else if (a["start.dateTime"] == null && b["start.dateTime"] != null) { // if b has a start date and time and a doesn't
+                    if (moment(a["start.date"], "YYYY-MM-DD").isSame(moment(b["start.dateTime"], "YYYY-MM-DDTHH:mm:ss"))) { // if both events have the same start date
+                        return moment(a["end.date"], "YYYY-MM-DD").diff(moment(b["end.dateTime"], "YYYY-MM-DDTHH:mm:ss"));
+                    }
+                } else { // if both events don't have a start date and time
+                    if (moment(a["start.date"], "YYYY-MM-DD").isSame(moment(b["start.date"], "YYYY-MM-DD"))) { // if both events have the same start date
+                        return moment(a["end.date"], "YYYY-MM-DD").diff(moment(b["end.date"], "YYYY-MM-DD"));
+                    }
+                }
+            });
+
+            // for every event associated with the keyword
+            for (var i = 0; i < filteredEvents.length; i++) {
+
+                if(printedUIDs.includes(filteredEvents[i].uid)) // if event already printed
+                    continue; // skip event
+
+                printedUIDs.push(filteredEvents[i].uid); // event is printed
+
+                if (filteredEvents[i]["start.dateTime"] != null) { // if event has a start date and time
+
+                    // ora inizio --> ora fine
+                    var startDate = moment(filteredEvents[i]["start.dateTime"], "YYYY-MM-DDTHH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+                    var endDate = moment(filteredEvents[i]["end.dateTime"], "YYYY-MM-DDTHH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+
+                    let tempEndDate = endDate;
+                    if(endDate == startDate) // if end date == start date --> temp end date add 1 hour
+                        tempEndDate = moment(filteredEvents[i]["end.dateTime"], "YYYY-MM-DDTHH:mm:ss").add(1, 'hours').format("DD/MM/YYYY HH:mm:ss");
+                    if(moment(tempEndDate, "DD/MM/YYYY HH:mm:ss").isBefore(moment())) eventRunning = "event-past";
+                    else if(moment().isBetween(moment(startDate, "DD/MM/YYYY HH:mm:ss"), moment(tempEndDate, "DD/MM/YYYY HH:mm:ss"))) eventRunning = "event-running";
+                    else eventRunning = "";
+
+                    // if start date == end date (same day)
+                    if (moment(startDate, "DD/MM/YYYY HH:mm:ss").isSame(moment(endDate, "DD/MM/YYYY HH:mm:ss"), "day")) {
+
+                        // for every day shown
+                        for (var gg = 0; gg < daysShown; gg++) {
+
+                            // if filteredEvents "start.date" is today + gg
+                            if (moment(startDate, "DD/MM/YYYY HH:mm:ss").isSame(moment().add(gg, 'days'), "day")) {
+
+                                $("#events-" + gg).css("display", "block");
+                                // if start and end time matches --> print the time only once
+                                if (moment(startDate, "DD/MM/YYYY HH:mm:ss").format("HH:mm") == moment(endDate, "DD/MM/YYYY HH:mm:ss").format("HH:mm")) {
+                                    $("#events-" + gg + "-eventslist").append(getEventHTML(filteredEvents[i]["summary"], moment(startDate, "DD/MM/YYYY HH:mm:ss").format("HH:mm")));
+                                } else { // if start and end time doesn't match --> print start and end time
+                                    $("#events-" + gg + "-eventslist").append(getEventHTML(filteredEvents[i]["summary"], moment(startDate, "DD/MM/YYYY HH:mm:ss").format("HH:mm"), moment(endDate, "DD/MM/YYYY HH:mm:ss").format("HH:mm")));
+                                }
+
+                            }
+
+                        }
+
+                    } else { // if start date != end date --> print day and time (events that last more than one day)
+
+                        // for every day shown
+                        for (var gg = 0; gg < daysShown; gg++) {
+
+                            if (moment(startDate, "DD/MM/YYYY HH:mm:ss").isSame(moment().add(gg, 'days'), "day")) { // if start date is today + gg
+                                $("#events-" + gg).css("display", "block");
+                                $("#events-" + gg + "-eventslist").append(getEventHTML(filteredEvents[i]["summary"], moment(startDate, "DD/MM/YYYY HH:mm:ss").format("HH:mm"), moment(endDate, "DD/MM/YYYY HH:mm:ss").format("DD/MM/YYYY HH:mm")));
+                            }else if(moment(endDate, "DD/MM/YYYY HH:mm:ss").isSame(moment().add(gg, 'days'), "day")){ // if end date is today + gg
+                                $("#events-" + gg).css("display", "block");
+                                $("#events-" + gg + "-eventslist").append(getEventHTML(filteredEvents[i]["summary"], moment(startDate, "DD/MM/YYYY HH:mm:ss").format("DD/MM/YYYY HH:mm"), moment(endDate, "DD/MM/YYYY HH:mm:ss").format("HH:mm")));
+                            }else if(moment(startDate, "DD/MM/YYYY HH:mm:ss").isBefore(moment().add(gg, 'days'), "day") && moment(endDate, "DD/MM/YYYY HH:mm:ss").isAfter(moment().add(gg, 'days'), "day")){ // if event starts before today + gg and ends after today + gg
+                                $("#events-" + gg).css("display", "block");
+                                $("#events-" + gg + "-eventslist").append(getEventHTML(filteredEvents[i]["summary"], moment(startDate, "DD/MM/YYYY HH:mm:ss").format("DD/MM/YYYY HH:mm"), moment(endDate, "DD/MM/YYYY HH:mm:ss").format("DD/MM/YYYY HH:mm")));
+                            }
+
+                        }
+
+                    }
+
+
+                } else {
+
+                    // giorno --> giorno (orario not specified)
+                    var startDate = moment(filteredEvents[i]["start.date"], "YYYY-MM-DD").format("DD/MM/YYYY");
+                    var endDate = moment(filteredEvents[i]["end.date"], "YYYY-MM-DD").format("DD/MM/YYYY");
+
+                    if(moment(endDate, "DD/MM/YYYY").isBefore(moment())) eventRunning = "event-past";
+                    else if(moment().isBetween(moment(startDate, "DD/MM/YYYY"), moment(endDate, "DD/MM/YYYY"))) eventRunning = "event-running";
+                    else eventRunning = "";
+
+                    // for every day shown
+                    for (var gg = 0; gg < daysShown; gg++) {
+
+                        // if starts today + gg
+                        if (moment(startDate, "DD/MM/YYYY").isSame(moment().add(gg, 'days'), "day") || (moment(startDate, "DD/MM/YYYY").isBefore(moment().add(gg, 'days'), "day") && moment(endDate, "DD/MM/YYYY").isAfter(moment().add(gg, 'days'), "day"))) {
+
+                            $("#events-" + gg).css("display", "block");
+                            $("#events-" + gg + "-eventslist").append(getEventHTML(filteredEvents[i]["summary"], moment(startDate, "DD/MM/YYYY HH:mm:ss").format("DD/MM/YYYY"), moment(endDate, "DD/MM/YYYY HH:mm:ss").format("DD/MM/YYYY")));
+
+                        }
+                    }
+                }
+            }
+        }
+
+        // data is fetched in csv --> convert to json
+        function csv2json(text, headers, quoteChar = '"', delimiter = ',') {
+            const regex = new RegExp(`\\s*(${quoteChar})?(.*?)\\1\\s*(?:${delimiter}|$)`, 'gs');
+
+            const match = line => [...line.matchAll(regex)]
+                .map(m => m[2])  // we only want the second capture group
+                .slice(0, -1);   // cut off blank match at the end
+
+            const lines = text.split('\n');
+            const heads = headers ?? match(lines.shift());
+
+            return lines.map(line => {
+                return match(line).reduce((acc, cur, i) => {
+                    // Attempt to parse as a number; replace blank matches with `null`
+                    const val = cur.length <= 0 ? null : Number(cur) || cur;
+                    const key = heads[i] ?? `extra_${i}`;
+                    return { ...acc, [key]: val };
+                }, {});
+            });
+        }
+    </script>
+
+    <script>
+        // show/hide keywords info
+        $('#maggioriInfo').click(function () {
+            $('#cercaEventiInfo').slideToggle(500);
+        });
+    </script>
+
+    <script>
+        // scroll to id from url (if present) - navbar height
+        $(document).ready(function () {
+            var url = window.location.href;
+            if (url.indexOf("#") != -1) {
+                var id = url.substring(url.indexOf("#") + 1);
+                $('html, body').animate({
+                    scrollTop: $("#" + id).offset().top - 70
+                }, 500);
+                window.history.replaceState({}, document.title, "/");
+            }
+        });
+    </script>
+
+<!--
+    <script>
+        var input = document.querySelector(".creative-input");
+        input.addEventListener("keyup", function (event) {
+            var inputText = input.value.toLowerCase();
+            if (inputText === "fermi notify" || inputText === "ferminotify")  {
+                input.style.color = "var(--highlighted-color)";
+            } else {
+                input.style.color = "var(--text-color)";
+            }
+        });
+    </script>
+-->
+</body>
+</html>
