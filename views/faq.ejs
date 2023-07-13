@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Frequently Asked Questions di Fermi Notify.">
+    <meta propety="og:image" content="https://ferminotify.me/img/og-logo.png">
+    <meta property="og:description" content="Fermi Notify è un servizio non ufficiale dell'IS &quot;E. Fermi&quot; Mantova che invia delle notifiche per avvisare delle variazioni dell'orario del calendario giornaliero.">
+    <meta property="og:title" content="FAQ · Fermi Notify">
+    <meta property="og:type" content="website">
+	<script src="/js/hamburger.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="/img/favicon-black.png">
+    <!-- css -->
+    <link rel="stylesheet" href="/css/faq.css">
+    <link rel="stylesheet" href="/css/general.css">
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/95ae55bd9a.js" crossorigin="anonymous"></script>
+    <!-- Material Icon -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- jQuery 3.6.0 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3511194049429500" crossorigin="anonymous"></script>
+    
+	<title>FAQ · Fermi Notify</title>
+</head>
+<body>
+
+	<%- include('includes/navbar-min.ejs') %>
+
+    <div class="content minHeight-100vh">
+
+    <div class="section">
+        <h1 class="firstTitle">FAQ</h1>
+        
+        <div class="faqIndex">
+            <div onclick="showElem(this)" id="generali" class="indexElem indexElemActive">
+                Generali
+            </div>
+            <div onclick="showElem(this)" id="configurazione" class="indexElem">
+                Configurazione
+            </div>
+            <div onclick="showElem(this)" id="informativa" class="indexElem">
+                Informativa privacy
+            </div>
+        </div>
+
+        <div class="faqIndexMobile">
+            <select id="faqIndex-select">
+                <option value="generali" selected>Generali</option>
+                <option value="configurazione">Configurazione</option>
+                <option value="informativa">Informativa privacy</option>
+            </select>
+        </div>
+
+        <div id="generaliContainer" class="indexElemContainer indexElemShow">
+            <div class="question">
+                <h3 class="thirdTitle">1. Cos'&egrave; Fermi Notify?</h3>
+                <p class="answer">
+                    Fermi Notify &egrave; un servizio che ti permette di ricevere notifiche via email o via Telegram quando viene aggiunto un evento o una variazione dell'orario sul <a href="https://www.fermimn.edu.it/variazioni-orario/">calendario giornaliero</a>, come una sostituzione o un cambio aula.
+                </p>
+            </div>
+
+            <div class="question">
+                <h3 class="thirdTitle">2. Come faccio a registrarmi?</h3>
+                <p class="answer">Per registrarti clicca <a href="https://www.ferminotify.me/register">qui</a>. L'email utilizzata nella registrazione sarà quella che riceverà le notifiche.</p>
+            </div>
+
+            <div class="question">
+                <h3 class="thirdTitle">3. Come viene protetta la password?</h3>
+                <p class="answer">La password viene criptata attraverso un processo di hashing ricorsivi a un numero adeguato di round.</p>
+            </div>
+
+            <div class="question">
+                <h3 class="thirdTitle">4. Quando arrivano le notifiche?</h3>
+                <p class="answer">
+                    Nel caso in cui l'evento che ti riguarda venga pubblicato in qualsiasi momento prima del giorno stesso, ti arriver&agrave; una notifica che racchiude tutti gli eventi in programma alle <span class="highlighted-text">6:00</span> del giorno stesso.
+                </p>
+                <p class="answer answer-staccato">
+                    Nel caso in cui l'evento che ti riguarda venga pubblicato dopo le 6:00 (come una sostituzione dell'ultimo minuto), riceverai la notifica <span class="highlighted-text">all'istante</span>.
+                </p>
+            </div>
+
+            <div class="question">
+                <h3 class="thirdTitle">5. Fermi Notify e l'Istituto Superiore "Enrico Fermi" Mantova.</h3>
+                <p class="answer">
+                    Fermi Notify non &egrave; un servizio ufficiale dell'Istituto Superiore "Enrico Fermi" di Mantova. Il sistema non è riconosciuto dalla presidenza. Eventuali malfunzionamenti sono a carico dello staff e non sono valide giustificazioni in uffici di segreteria e presidenza
+                </p>
+            </div>
+            
+        </div>
+
+        <div id="configurazioneContainer" class="indexElemContainer">
+            <div class="question">
+                <h3 class="thirdTitle">1. Cosa sono le keywords?</h3>
+                <p class="answer">
+                    Le <span class="highlighted-text">keywords</span> sono le parole chiave che inserisci nella tua lista per ricevere la notifica se &egrave; presente un evento che la riguarda nel calendario giornaliero.
+                </p>
+                <p class="answer answer-staccato">
+                    Esempio: se aggiungi <code>4CIIN</code> come keyword, riceverai una notifica se nel calendario giornaliero &egrave; presente un evento che contiene la parola <i>4CIIN</i>. Fai attenzione alla <span class="highlighted-text">formattazione</span> della keyword, dev'essere uguale a quella scritta nel calendario giornaliero (<code>4CIIN</code>, non "4 CIIN" o "4CIN")!
+                </p>
+                <p class="answer answer-staccato">
+                    Consiglio: aggiungi la tua <span class="highlighted-text">classe</span> per ricevere le notifiche riguardanti la classe (come una sostituzione o un cambio aula), puoi aggiungere anche:<br>
+                    <ul style="line-height: 1.5em; ">
+                        <li>il tuo <span class="highlighted-text">cognome</span> per le notifiche riguardanti solo te (come la prenotazione di un aula);</li>
+                        <li>il nome di un <span class="highlighted-text">corso</span> che segui per le notifiche riguardanti le attivit&agrave; extrascolastiche (es. <i>Corso FUSION MOD.CAM</i>).</li>
+                    </ul>
+                </p>
+            </div>
+
+            <div class="question">
+                <h3 class="thirdTitle">2. Come aggiungo le keywords?</h3>
+                <p class="answer">
+                    Puoi aggiungere le keywords nella casella dedicata nella <a href="https://www.ferminotify.me/dashboard">Dashboard</a>. Una volta aggiunte, appariranno nella lista. Le keywords <span class="highlighted-text">non</span> sono case sensitive, quindi puoi aggiungerle in maiuscolo o minuscolo (4CIIN o 4Ciin o 4ciin non cambia).
+                </p>
+            </div>
+
+            <div class="question">
+                <h3 class="thirdTitle">3. Come rimuovo le keywords?</h3>
+                <p class="answer">
+                    Per rimuovere una keyword, <span class="highlighted-text">riscrivila</span> nella casella che hai utilizzato per aggiungerla nella <a href="https://www.ferminotify.me/dashboard">Dashboard</a>. Quindi la keyword verr&agrave; rimossa dalla lista.
+                </p>
+            </div>
+
+            <div class="question">
+                <h3 class="thirdTitle">4. Come funziona la notifica tramite Telegram?</h3>
+                <p class="answer">
+                    Per essere notificato su Telegram, invia il <span class="highlighted-text">codice</span> presente nella <a href="https://www.ferminotify.me/dashboard#Telegram">Dashboard</a> al bot <a href="https://t.me/FermiNotifierBot">@FermiNotifierBot</a>.
+                </p>
+            </div>
+        </div>
+
+        <div id="informativaContainer" class="indexElemContainer">
+            <h3 class="thirdTitle">Informativa dati salvati e utilizzo</h2>
+			<p class="answer">
+				Il sito utilizza le tecnologie <span class="mono">session cookie</span> e <span class="mono">localStorage</span> al fine di conservare determinate informazioni per migliorare l'esperienza di navigazione sul sito. In localStorage vengono memorizzati dati che riguardano le keywords nella sezione "Cerca eventi" nella hompage e l'acconsentimento all'utilizzo di session cookie e localStorage e vengono salvati in modo locale sul dispositivo dell'utente. I session cookie sono cookie necessari per il funzionamento del sito riguardanti la sessione attuale per il log in all'account e vengono eliminati automaticamente alla chiusura della sessione. Si precisa che tali informazioni vengono utilizzate esclusivamente per i fini sopra specificati e non verranno in alcun modo utilizzate per scopi commerciali o pubblicitari, n&eacute; verranno condivise con terze parti.<br>
+				In conformit&agrave; alle normative italiane ed europee in materia di protezione dei dati personali, l'uso di localStorage costituisce un trattamento dei dati personali dell'utente e, pertanto, &egrave; soggetto alle disposizioni in materia di privacy.<br>
+				Si informa che è possibile cancellare i dati salvati in localStorage e disabilitare il salvataggio per questo sito modificando le impostazioni del proprio browser o cliccando <a onclick="disableLocalStorage()" id="disableLocalStorage-btn">qui</a>. In tal caso, tuttavia, alcune funzionalità del sito potrebbero non essere disponibili o potrebbero non funzionare correttamente.<br>
+				Per accedere a questa pagina in futuro, è possibile cliccare su "Informativa privacy" presente in fondo a ogni pagina.
+			</p>
+        </div>
+
+    </div>
+
+    <div class="emailButtonContainer">
+        Per supporto o informazioni, contatta:
+        <a href="mailto:master@ferminotify.me" class="emailButton">
+            <i class="fa-solid fa-envelope"></i>
+            master@ferminotify.me
+        </a>
+    </div>
+
+    </div>
+	
+
+	<%- include('includes/footer-min.ejs') %>
+	
+	<%- include('includes/cookie-min.ejs') %>
+
+    <script>
+        // onclick indexElem add active and remove to the others
+        const indexElem = document.querySelectorAll(".indexElem");
+        indexElem.forEach(elem => {
+            elem.addEventListener("click", () => {
+                indexElem.forEach(elem => {
+                    elem.classList.remove("indexElemActive");
+                });
+                elem.classList.add("indexElemActive");
+            });
+        });
+    </script>
+
+    <script>
+        // faqIndexMobile select
+        var select = document.getElementById("faqIndex-select");
+        function onChange() {
+            var value = select.value;
+            const container = document.getElementById(value + "Container");
+            const indexElemContainer = document.querySelectorAll(".indexElemContainer");
+            indexElemContainer.forEach(elem => {
+                elem.classList.remove("indexElemShow");
+            });
+            container.classList.add("indexElemShow");
+        }
+        select.onchange = onChange;
+        onChange();
+    </script>
+
+    <script>
+        function showElem(elem) {
+            const id = elem.id;
+            showPage(id);
+        }
+
+        function showPage(id){
+            const container = document.getElementById(id + "Container");
+            const indexElemContainer = document.querySelectorAll(".indexElemContainer");
+            indexElemContainer.forEach(elem => {
+                elem.classList.remove("indexElemShow");
+            });
+            container.classList.add("indexElemShow");
+        }
+
+        var URLParams = new URLSearchParams(window.location.search);
+        var page = URLParams.get("page");
+        if(page == "informativa" || page == "configurazione" || page == "generali"){
+            showPage(page);
+            document.querySelectorAll(".indexElem").forEach(elem => {
+                elem.classList.remove("indexElemActive");
+            });
+            document.getElementById(page).classList.add("indexElemActive");
+        }
+        history.replaceState({}, document.title, "/" + "faq");
+    </script>
+
+    <script>
+        function disableLocalStorage(){
+            localStorage.clear();
+            setInterval(function(){
+                window.location.replace("/");
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>

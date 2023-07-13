@@ -1,0 +1,136 @@
+/*	BUY ME A COFFEE
+ *	FONTI
+ *	https://it.freepik.com/vettori-gratuito/collezione-ragnatela-ragno-disegnati-a-mano_5630377.htm#query=ragnatele&position=6&from_view=search&track=sph"
+ */
+ .coffee-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*font-family: var(--monospace);*/
+}
+
+.coffee-button {
+    display: flex;
+    color: #FFF;
+    transition: all 0.3s;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 0;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.coffee-button::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    transition: all 0.3s;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-top-color: var(--highlighted-color);
+    border-bottom-color: var(--highlighted-color);
+    transform: scale(0.1, 1);
+}
+
+.coffee-button:hover::before {
+    opacity: 1;
+    transform: scale(1, 1);
+}
+
+.coffee-button:hover .coffee-link {
+    margin: 0 17px;
+}
+
+.coffee-button:hover .coffee-icon,
+.coffee-button:hover .coffee-arrow {
+    color: var(--highlighted-color);
+}
+
+.coffee-link {
+    display: flex;
+    transition: all ease-in-out 0.3s;
+}
+
+.coffee-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.coffee-icon {
+    font-size: 40px;
+    margin: 0;
+    padding-right: 15px;
+    transition: all 0.3s;
+}
+
+.coffee-text-small {
+    font-size: 1.09em;
+    margin: 0;
+}
+
+.coffee-text-big {
+    margin: 0;
+}
+
+.coffee-arrow {
+    margin: 0;
+    padding: 0 15px;
+    transition: all 0.3s;
+}
+
+@media only screen and (max-width: 600px) {
+    .coffee-container {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .coffee-arrow {
+        display: none;
+    }
+
+    .coffee-icon {
+        font-size: 40px;
+        margin: 0;
+        padding-right: 15px;
+        transition: all 0.3s;
+        color: var(--highlighted-color);
+    }
+
+    .coffee-text-small {
+        font-size: inherit;
+        margin: 0;
+    }
+
+    .coffee-text-big {
+        margin: 0;
+    }
+
+    .coffee-button:before {
+        opacity: 1;
+        transform: scale(1, 1);
+    }
+}
+
+@media only screen and (max-width: 333px) {
+    .coffee-text-big {
+        font-size: 7vw;
+    }
+
+    .coffee-text-small {
+        font-size: 5vw;
+    }
+
+    .coffee-icon {
+        font-size: 12vw;
+    }
+}
