@@ -236,8 +236,8 @@ p.main-subtitle5 {
 
 #cercaEventiInfo{
     padding: 0 20px;
-    border-left: 1px solid var(--highlighted-color);
-    border-right: 1px solid var(--highlighted-color);
+    border-left: 1px solid var(--primary-color);
+    border-right: 1px solid var(--primary-color);
 }
 
 .cercaEventi-keywords-list{
@@ -258,7 +258,7 @@ p.main-subtitle5 {
     white-space: pre;
 }
 .cercaEventi-keyword:hover{
-    color: var(--highlighted-color);
+    color: var(--primary-color);
 }
 
 .cercaEventi-title{
@@ -322,10 +322,10 @@ p.main-subtitle5 {
 	left: -25px !important;
 }
 .index-form > .index-form-card-container:last-of-type > .card-1:last-of-type:before{
-    background-color: var(--highlighted-color);
+    background-color: var(--primary-color);
 }
 .index-form > .index-form-card-container:last-of-type > .card-1:last-of-type:hover{
-    border-color: var(--highlighted-color);
+    border-color: var(--primary-color);
 }
 .index-form-card-container .card-1 .fas{
     font-size: 25px;

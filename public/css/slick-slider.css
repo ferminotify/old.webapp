@@ -65,7 +65,7 @@
 	font-size: 0;
 	line-height: 0;
 	opacity: .75;
-	color: #fff;
+	color: #ececec;
 }
 
 .slick-prev {
@@ -151,7 +151,7 @@
 	width: 60px;
 	height: 60px;
 	margin-left: -30px;
-	background-color: #fff;
+	background-color: #ececec;
 	border-radius: 50%;
 }
 
@@ -162,7 +162,7 @@
 	width: 60px;
 	height: 60px;
 	background-image: none;
-	background-color: #fff !important;
+	background-color: #ececec !important;
 	opacity: 1 !important;
 	border-radius: 50%;
 }
@@ -201,7 +201,7 @@
 	width: 60px;
 	height: 60px;
 	margin-left: -30px;
-	background-color: #fff;
+	background-color: #ececec;
 	border-radius: 50%;
 }
 
@@ -212,7 +212,7 @@
 	width: 60px;
 	height: 60px;
 	background-image: none;
-	background-color: #fff !important;
+	background-color: #ececec !important;
 	opacity: 1 !important;
 	border-radius: 50%;
 }
@@ -248,7 +248,7 @@
 	display: block;
 	width: 35%;
 	margin: 0 25px; /* 0px 15px */
-	background-color: #fff;
+	background-color: #ececec;
 	border-radius: 10px;
 	box-shadow: 0 7px 15px rgba(0, 0, 0, .1);
 	border: 1px solid var(--main-bg-color);
@@ -284,7 +284,7 @@
 	display: grid;
 	grid-template-columns: 0.5fr 1fr;
 	gap: 5px;
-	background-color: #fff;
+	background-color: #ececec;
 	border-radius: 15px;
 }
 
@@ -327,7 +327,7 @@
 
 .slick-center .slider-card-icon {
 	transition: all .2s ease-out;
-	color: var(--highlighted-color);
+	color: var(--primary-color);
 }
 
 .slideshow-cards .card .content-card h2:not(.sliderTitolo) { line-height: 1; margin: 5px 0 }
@@ -338,7 +338,7 @@
 	}
 	.slider-card-icon {
 		transition: all .2s ease-out;
-		color: var(--highlighted-color);
+		color: var(--primary-color);
 	}
 }
 

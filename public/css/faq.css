@@ -47,8 +47,8 @@
 }
 
 .indexElemActive{
-	border-bottom: 3px solid var(--highlighted-color) !important;
-	background-color: var(--highlighted-color);
+	border-bottom: 3px solid var(--primary-color) !important;
+	background-color: var(--primary-color);
 	font-weight: 700;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
@@ -93,8 +93,8 @@
 }
 
 .emailButton:hover{
-	background-color: var(--highlighted-color);
-	border: 1px solid var(--highlighted-color);
+	background-color: var(--primary-color);
+	border: 1px solid var(--primary-color);
 }
 
 .faqIndexMobile{
@@ -126,5 +126,5 @@
 	cursor: pointer;
 }
 #disableLocalStorage-btn:hover{
-	color: var(--highlighted-color);
+	color: var(--primary-color);
 }

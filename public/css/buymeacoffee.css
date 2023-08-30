@@ -37,8 +37,8 @@
     border-bottom-width: 1px;
     border-top-style: solid;
     border-bottom-style: solid;
-    border-top-color: var(--highlighted-color);
-    border-bottom-color: var(--highlighted-color);
+    border-top-color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
     transform: scale(0.1, 1);
 }
 
@@ -53,7 +53,7 @@
 
 .coffee-button:hover .coffee-icon,
 .coffee-button:hover .coffee-arrow {
-    color: var(--highlighted-color);
+    color: var(--primary-color);
 }
 
 .coffee-link {
@@ -103,7 +103,7 @@
         margin: 0;
         padding-right: 15px;
         transition: all 0.3s;
-        color: var(--highlighted-color);
+        color: var(--primary-color);
     }
 
     .coffee-text-small {

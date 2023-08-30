@@ -59,6 +59,8 @@
 </head>
 <body>
 
+    <%- include('includes/cookie-min.ejs') %>
+
     <%- include('includes/navbar-min.ejs') %>
     
     <div class="minHeight-100vh">
@@ -156,7 +158,7 @@
                     </div>
                 </div>
             
-                <p class="sub-description maggioriInfo-container"><span id="maggioriInfo"><i class="fa-solid fa-circle-info"></i> <span style="text-decoration: underline; text-decoration-color: var(--highlighted-color)">Maggiori informazioni</span></span></p>
+                <p class="sub-description maggioriInfo-container"><span id="maggioriInfo"><i class="fa-solid fa-circle-info"></i> <span style="text-decoration: underline; text-decoration-color: var(--primary-color)">Maggiori informazioni</span></span></p>
                 <div id="cercaEventiInfo" style="display: none;">
                     <p class="cercaEventi-description sub-description">Cerca nel <span class="highlighted-text">calendario giornaliero</span> una <span class="highlighted-text">parola chiave</span> e mostra le variazioni previsti nei prossimi 3 giorni.</p>
                     <ul><li class="sub-description" style="padding: 0; line-height: 1;">Esempio: con <code>4CIIN</code> mostra le variazioni della classe <i>4CIIN</i>.</li></ul>
@@ -359,7 +361,7 @@
         <div class="content">
             <!-- VISIT FAQ -->
             <div class="section text-center">
-                Visita la <a href="./faq" style="text-decoration-color: var(--highlighted-color);"><span class="highlighted-text">FAQ</span></a> per maggiori informazioni.
+                Visita la <a href="./faq" style="text-decoration-color: var(--primary-color);"><span class="highlighted-text">FAQ</span></a> per maggiori informazioni.
             </div>
 
             <!-- FEEDBACK & RECRUITING -->
@@ -423,8 +425,6 @@
     </div>
 
     <%- include('includes/footer-min.ejs') %>
-
-    <%- include('includes/cookie-min.ejs') %>
 
     <% if (typeof message !=='undefined' ) { %>
         <div id="alertbanner" class="successbanner">
@@ -604,7 +604,7 @@
             const daysShown = 4; // 0 = today, 1 = tomorrow, 2 = day after tomorrow, 3 = day after day after tomorrow
 
             for (let i = 0; i < daysShown; i++) {
-                const html = `<span style='color: var(--highlighted-color)'>${getDayDescription(i)}</span><span>${weekDay[moment().add(i, 'days').isoWeekday()]} ${moment().add(i, 'days').format("DD/MM/YYYY")}</span>`;
+                const html = `<span style='color: var(--primary-color)'>${getDayDescription(i)}</span><span>${weekDay[moment().add(i, 'days').isoWeekday()]} ${moment().add(i, 'days').format("DD/MM/YYYY")}</span>`;
                 $(`#events-${i}-date`).html(html);
             }
 
@@ -642,7 +642,7 @@
             });
 
             if(filteredEvents.length == 0 && keywords.length > 0){
-                $("#noevents").append("<p style='color: var(--highlighted-color);'>Nessun evento trovato</p>");
+                $("#noevents").append("<p style='color: var(--primary-color);'>Nessun evento trovato</p>");
                 $("#noevents").show();
             }
             
@@ -817,7 +817,7 @@
         input.addEventListener("keyup", function (event) {
             var inputText = input.value.toLowerCase();
             if (inputText === "fermi notify" || inputText === "ferminotify")  {
-                input.style.color = "var(--highlighted-color)";
+                input.style.color = "var(--primary-color)";
             } else {
                 input.style.color = "var(--text-color)";
             }

@@ -27,6 +27,8 @@
 <title>Registrazione · Fermi Notify</title>
 </head>
 <body>
+    <%- include('includes/cookie-min.ejs') %>
+
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-inner">
@@ -112,8 +114,6 @@
 <% } %>
 
     <%- include('includes/footer-min.ejs') %>
-	
-    <%- include('includes/cookie-min.ejs') %>
 
 <script>
     $('input').on('change', function(){
@@ -127,7 +127,7 @@
 
     $('input').on('focus', function(){
          labelID = this.id + "-label";
-         $("#"+labelID).css("color", "var(--highlighted-color)");
+         $("#"+labelID).css("color", "var(--primary-color)");
          $(this).on("focusout", function() {
             $("#"+labelID).css("color", "#fff");
         });
@@ -136,13 +136,13 @@
     $('#password2').on('focus', function(){
          document.getElementById("psw-non-corrispondono").style.color = "#fff";
          $(this).on("focusout", function() {
-            document.getElementById("psw-non-corrispondono").style.color = "var(--highlighted-color)";
+            document.getElementById("psw-non-corrispondono").style.color = "var(--primary-color)";
         });
     });
     $('#password').on('focus', function(){
          document.getElementById("psw-corta").style.color = "#fff";
          $(this).on("focusout", function() {
-            document.getElementById("psw-corta").style.color = "var(--highlighted-color)";
+            document.getElementById("psw-corta").style.color = "var(--primary-color)";
         });
     });
 
@@ -157,7 +157,7 @@
     });
 
     $(".gender-select").on('focus', function(){
-        $("#gender-label").css("color", "var(--highlighted-color)");
+        $("#gender-label").css("color", "var(--primary-color)");
         $(this).on("focusout", function() {
             $("#gender-label").css("color", "#fff");
         });

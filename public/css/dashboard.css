@@ -10,12 +10,15 @@
 
 .dashboard a:hover {
     text-decoration: none;
-    color: var(--highlighted-color);
+    color: var(--primary-color);
 }
 
 .keywords {
     display: grid;
     grid-template-columns: min(80%, 500px) 20%;
+}
+
+.keywords-form-container{
     margin: 15px 0;
 }
 
@@ -30,7 +33,7 @@
 }
 
 .bigSectionTitle i {
-    color: var(--highlighted-color);
+    color: var(--primary-color);
     margin-right: 8px;
 }
 
@@ -40,7 +43,7 @@
 
 #telegramCode {
     margin: 10px 0;
-    color: var(--highlighted-color);
+    color: var(--primary-color);
     font-family: 'Source Code Pro', monospace;
     border: 3px solid #fff;
     border-radius: 10px;
@@ -63,7 +66,7 @@
 
 #copied {
     margin-left: 5px;
-    color: var(--highlighted-color);
+    color: var(--primary-color);
     display: none;
     letter-spacing: 0.1em;
 }
@@ -123,11 +126,11 @@
 }
 
 .checkbox:checked+.slider {
-    background-color: var(--highlighted-color);
+    background-color: var(--primary-color);
 }
 
 .checkbox:focus+.slider {
-    box-shadow: 0 0 1px var(--highlighted-color);
+    box-shadow: 0 0 1px var(--primary-color);
 }
 
 .checkbox:checked+.slider:before {
@@ -156,6 +159,14 @@
 
 .invioNotificheContainer .checkNot-container:last-child {
     border-bottom: 1px solid white;
+}
+
+
+/* RECOMMENDED KEYWORDS */
+#recommended-keywords-paragraph{
+    font-size: 0.7em;
+    display: none;
+    width: 100%;
 }
 
 
