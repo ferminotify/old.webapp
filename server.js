@@ -148,8 +148,8 @@ app.post("/users/register", async (req, res) => {
       } else {
         pool.query(
           `INSERT INTO subscribers (name, surname, email, password, notifications, telegram, gender, notification_preferences)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-              RETURNING id, password`,
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING id, password`,
           [name, surname, email, hashedPassword, -2, telegramTemporaryCode, gender, 2],
           (err, results) => {
             if (err) {
@@ -164,23 +164,62 @@ app.post("/users/register", async (req, res) => {
   );
 });
 
-app.post("/user/request-change-password", (req, res) => {
+app.get("/user/change-password", async (req, res) => {
+  let { user_email, random_code, new_password, new_password_conf } = req.body;
+
+  pool.query(
+    `SELECT * FROM subscribers
+      WHERE email = $1;`,
+    [user_email],
+    async (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+
+      if (RES.rows[0].secret_temp == random_code) { // Password change
+
+        if (new_password != new_password_conf) {
+          return res.send("Password not matching"); // TODO
+        }
+
+        if (password.length < 6) {
+          return res.send("Short password"); // TODO
+        }
+      
+        hashedPassword = await bcrypt.hash(password, 10);
+
+        pool.query( // Donno if I can embed 2 queries
+          `UPDATE subscribers
+            SET password = '$1'
+            WHERE email = '$2';`,
+          [user_email, new_password],
+          (err, results) => {
+            res.send("Success!"); // TODO
+          }
+        );
+      }
+    }
+  );
+  
+});
+
+app.post("/user/change-password", (req, res) => {
   let { user_email } = req.body;
 
   const randomCode = Math.random().toString(36).substring(2, 8); // 6 char long
 
   pool.query(
     `INSERT INTO subscribers (secret_temp, secret_temp_timestamp)
-        VALUES ($1, CURRENT_TIMESTAMP);`,
+      VALUES ($1, CURRENT_TIMESTAMP);`,
     [randomCode],
     (err, res) => {
       if (err) {
         throw err;
       }
-/* !! */      res.redirect("https://www.google.com"); // temp stuff
+      res.send("Temp success"); // TODO
     }
   );
-})
+});
 
 app.post("/notification-preferences", async (req, res) => {
   let option;
