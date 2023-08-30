@@ -164,6 +164,24 @@ app.post("/users/register", async (req, res) => {
   );
 });
 
+app.post("/user/request-change-password", (req, res) => {
+  let { user_email } = req.body;
+
+  const randomCode = Math.random().toString(36).substring(2, 8); // 6 char long
+
+  pool.query(
+    `INSERT INTO subscribers (secret_temp, secret_temp_timestamp)
+        VALUES ($1, CURRENT_TIMESTAMP);`,
+    [randomCode],
+    (err, res) => {
+      if (err) {
+        throw err;
+      }
+/* !! */      res.redirect("https://www.google.com"); // temp stuff
+    }
+  );
+})
+
 app.post("/notification-preferences", async (req, res) => {
   let option;
 
