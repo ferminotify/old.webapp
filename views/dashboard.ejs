@@ -60,6 +60,8 @@
 </head>
 <body>
 
+    <%- include('includes/cookie-min.ejs') %>
+
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-inner">
@@ -107,25 +109,26 @@
                 </ul>
 
 
-                <form action="/keyword" method="POST" class="keywords" onsubmit="loading()">
+                <div class="keywords-form-container">
 
-                    <input type="text" id="keyword" name="keyword" placeholder="Es. 4CIIN" class="keyword-input" required/><!-- style="text-transform: uppercase;"/>
-                    available when database keywords are updated to uppercase + transform to uppercase on submit
-                    <script>
-                        $(function() {
-                            $('#keyword').keyup(function() {
-                                this.value = this.value.toLocaleUpperCase();
+                    <p id="recommended-keywords-paragraph">Keywords suggerite: <span id="recommended-keywords"></span></p>
+                    <form action="/keyword" method="POST" class="keywords" onsubmit="loading()" id="submitForm">
+                        <input type="text" id="keyword" name="keyword" placeholder="Es. 5CIIN" class="keyword-input" required style="text-transform: uppercase;"/>
+                        <script>
+                            $(function() {
+                                $('#keyword').keyup(function() {
+                                    this.value = this.value.toLocaleUpperCase();
+                                });
                             });
-                        });
-                    </script>
-                    -->
+                        </script>
 
-                    <button class="addButton" type="submit" id="submit-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        <button class="addButton" type="submit" id="submit-btn"><i class="fa-solid fa-chevron-right"></i></button>
 
-                </form>
+                    </form>
+                </div>
 
 
-                <p class="sub-description" id="maggioriInfo"><i class="fa-solid fa-circle-info"></i> <span style="text-decoration: underline; text-decoration-color: var(--highlighted-color)">Maggiori informazioni</span></p>
+                <p class="sub-description" id="maggioriInfo"><i class="fa-solid fa-circle-info"></i> <span style="text-decoration: underline; text-decoration-color: var(--primary-color)">Maggiori informazioni</span></p>
                 <ul class="keywords-info" id="keywordsInfo" style="display: none;">
                     <li>Aggiungi le parole chiave alla lista per essere notificat<%= gender=='M' ?'o':(gender=='F' ?'a':'ǝ') %> quando è presente un evento che la riguarda nel calendario giornaliero. Ti consigliamo di inserire la tua classe e il tuo cognome.
                     </li>
@@ -181,8 +184,6 @@
         <div class="section" id="Telegram">
             <h2 class="bigSectionTitle"><i class="fa-brands fa-telegram"></i> Telegram</h2>
             <% if (tgun.charAt(0)==='X' ) { %>
-                <p style="margin-bottom: 5px">Metodo di notifica ausiliario alla posta elettronica
-                    (facoltativo).
                 <p style="margin-bottom: 20px">Ricevi la notifica tramite messaggio su Telegram.</p>
                 <p>Per essere notificat<%= gender=='M' ?'o':(gender=='F' ?'a':'ǝ') %> su Telegram, manda
                 </p>
@@ -324,8 +325,6 @@
 
     <%- include('includes/footer-min.ejs') %>
 
-    <%- include('includes/cookie-min.ejs') %>
-
     <script>
         // copy text
         function copy() {
@@ -406,7 +405,7 @@
         console.log(keywords);
 
         if (keywords.length == 0) { // no keywords
-            $("#events").append("<p style='color: var(--highlighted-color);'>Nessuna keyword inserita</p>");
+            $("#events").append("<p style='color: var(--primary-color);'>Nessuna keyword inserita</p>");
             $("#events-loading").hide();
         } else {
 
@@ -475,7 +474,7 @@
             const daysShown = 4; // 0 = today, 1 = tomorrow, 2 = day after tomorrow, 3 = day after day after tomorrow
 
             for (let i = 0; i < daysShown; i++) {
-                const html = `<span style='color: var(--highlighted-color)'>${getDayDescription(i)}</span><span>${weekDay[moment().add(i, 'days').isoWeekday()]} ${moment().add(i, 'days').format("DD/MM/YYYY")}</span>`;
+                const html = `<span style='color: var(--primary-color)'>${getDayDescription(i)}</span><span>${weekDay[moment().add(i, 'days').isoWeekday()]} ${moment().add(i, 'days').format("DD/MM/YYYY")}</span>`;
                 $(`#events-${i}-date`).html(html);
             }
 
@@ -617,7 +616,7 @@
 
             // if there are no events --> print "Nessun evento trovato"
             if (!flagThereAreEvents) {
-                $("#events").append("<p style='color: var(--highlighted-color);'>Nessun evento trovato</p>");
+                $("#events").append("<p style='color: var(--primary-color);'>Nessun evento trovato</p>");
             }
 
             $('.events-container:visible:last').css('margin-bottom', '0');
@@ -644,6 +643,43 @@
                 }, {});
             });
         }
+    </script>
+
+    <!-- SCRIPT PER SUGGERIRE KEYWORDS -->
+    <script>
+
+        // add recommended keyword
+        function addRecommendedKeyword(addKw){
+            // submit addKw.innerHTML with ajax
+            kw2add = addKw.innerHTML;
+            $.ajax({
+                type: "POST",
+                url: "/keyword",
+                data: { keyword: kw2add },
+                success: function(response) {
+                    location.reload();
+                },
+                error: function (error) {
+                    console.warn(error);
+                },
+            });
+        }
+
+        var recommendedKeywords = [];
+        var recommendedKeywordsBox = document.getElementById("recommended-keywords");
+        var lastname = "<%= locals.lastname %>".toUpperCase();
+        // if last name is already in keywords
+        if (!keywords.some(kw => kw.toLowerCase() === lastname.toLowerCase()))
+            recommendedKeywords.push(lastname);
+
+        // add all recommended keywords to the box
+        recommendedKeywords.forEach(kw => {
+            recommendedKeywordsBox.innerHTML += `<a onclick="addRecommendedKeyword(this)">${kw}</a>`;
+        });
+
+        if(recommendedKeywords.length != 0) document.getElementById("recommended-keywords-paragraph").style.display = "block";
+
+        console.log(recommendedKeywords);
     </script>
 
     <script>

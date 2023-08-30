@@ -2,10 +2,10 @@
 
 
 :root {
-    --main-bg-color: #10101E;
-    --highlighted-color: #F29C46;
-    --highlighted-background-hover: #cf7922;
-    --highlighted-background-active: #F29C46;
+    --main-bg-color: #101010;
+    --primary-color: #FF9800;
+    --highlighted-background-hover: #E56900;
+    --highlighted-background-active: #F57C00;
     --monospace: 'Source Code Pro', monospace;
 }
 
@@ -54,6 +54,10 @@
     margin: 0;
 }
 
+a{
+    cursor: pointer;
+}
+
 html,
 body {
     width: 100%;
@@ -86,7 +90,7 @@ body {
     padding: 10px 15px;
     border: 1px solid white;
     border-radius: 15px;
-    background-color: rgba(16, 16, 30, 0.7);
+    background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(15px);
     font-size: 12px;
     animation: showCookieAlert 0.5s ease-in-out forwards;
@@ -96,7 +100,7 @@ body {
     text-decoration: none;
 }
 #cookieAlert a:hover{
-    color: var(--highlighted-color);
+    color: var(--primary-color);
 }
 .cookieAlert-btn{
     display: flex;
@@ -165,7 +169,7 @@ body {
     line-height: 1.3rem;
 }
 .errorDescription i{
-    color: var(--highlighted-color);
+    color: var(--primary-color);
 }
 /* keep text together */
 .errorRetry{
@@ -300,7 +304,7 @@ body {
     cursor: pointer;
     border-radius: 48px;
     padding: 13px 25px;
-    background-color: var(--highlighted-color);
+    background-color: var(--primary-color);
     color: #fff;
     width: fit-content;
     height: 100%;
@@ -310,7 +314,7 @@ body {
 }
 
 .btn-nobg {
-    color: var(--highlighted-color) !important;
+    color: var(--primary-color) !important;
     padding: 10px 15px;
     text-decoration: none;
     cursor: pointer;
@@ -377,7 +381,7 @@ body {
 }
 
 .highlighted-text {
-    color: var(--highlighted-color) !important;
+    color: var(--primary-color) !important;
 }
 
 /*
@@ -387,7 +391,7 @@ header{
 }*/
 
 .spanHighlight:hover>span {
-    color: var(--highlighted-color);
+    color: var(--primary-color);
 }
 
 /* NAVBAR */
@@ -451,7 +455,7 @@ header{
 .hamburger .line {
     height: 3px;
     width: 100%;
-    background-color: var(--highlighted-color);
+    background-color: var(--primary-color);
     border-radius: 10px;
 }
 
@@ -725,12 +729,12 @@ header{
 }
 
 .sub-description i {
-    color: var(--highlighted-color);
+    color: var(--primary-color);
 }
 
 .keywords-info {
     margin: 4px 7px 10px 7px;
-    border-left: 1px solid var(--highlighted-color);
+    border-left: 1px solid var(--primary-color);
 }
 
 .keywords-info li {

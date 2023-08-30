@@ -27,6 +27,8 @@
 <title>Login · Fermi Notify</title>
 </head>
 <body>
+    <%- include('includes/cookie-min.ejs') %>
+
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-inner">
@@ -50,7 +52,7 @@
 
 <div class="minHeight-100vh formContainer">
 <form id="form" onsubmit="loading()" action="/login" method="POST">
-    <h1 class="title"><span style="color: var(--highlighted-color);">&gt;</span> login</h1>
+    <h1 class="title"><span style="color: var(--primary-color);">&gt;</span> login</h1>
     <div class="email inputs">
         <label for="Email" id="email-label">Email</label>
         <input type="email" placeholder="Email" name="email" id="email" required class="input-box">
@@ -109,8 +111,6 @@
 
     <%- include('includes/footer-min.ejs') %>
 
-    <%- include('includes/cookie-min.ejs') %>
-
 <script>
     $('input').on('change', function(){
          if($(this).val()==""){
@@ -123,7 +123,7 @@
 
     $('input').on('focus', function(){
         labelID = this.id + "-label";
-        $("#"+labelID).css("color", "var(--highlighted-color)");
+        $("#"+labelID).css("color", "var(--primary-color)");
         $(this).on("focusout", function() {
             $("#"+labelID).css("color", "#fff");
         });
