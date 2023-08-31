@@ -7,7 +7,6 @@ const session = require("express-session");
 require("dotenv").config();
 const path = require(`path`);
 var bodyParser = require('body-parser')
-const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,18 +38,6 @@ app.use(passport.session());
 app.use(flash());
 
 app.set('case sensitive routing', true);
-
-// Create a transporter object using custom SMTP settings
-const transporter = nodemailer.createTransport({
-  host: 'smtppro.zoho.eu',
-  port: 587, 
-  secure: false,
-  auth: {
-    user: 'master@ferminotify.me',
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
-
 
 app.get("/", async (req, res) => {
   if (req.isAuthenticated()) {
@@ -90,6 +77,7 @@ app.get("/login", checkAuthenticated, (req, res) => {
 
 app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
   let name = await getUserName(req.user.email);
+  let lastname = await getUserLastName(req.user.email);
   let keywords = await getUserKeywords(req.user.email);
   let telegram = await getUserTelegram(req.user.email);
   let notifications = await getUserNotifications(req.user.email);
@@ -98,6 +86,7 @@ app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
 
   res.render("dashboard", { 
     user: name,
+    lastname: lastname,
     keywords: keywords,
     tgun: telegram,
     n_not: notifications,
@@ -128,7 +117,7 @@ app.post("/users/register", async (req, res) => {
 
   let errors = [];
 
-  if (!name || !email || 
+  if (!name || !surname || !email || 
       !password || !password2 || 
       !gender) {
     errors.push({ message: "Compila tutti i campi!" });
@@ -260,22 +249,6 @@ app.post("/user/request-change-password", (req, res) => { // Step 1 of password 
       if (err) {
         throw err;
       }
-
-      const mailOptions = {
-        from: 'Fermi Notify Team <master@ferminotify.me>',
-        to: user_email,
-        subject: 'Secret code',
-        text: `4 ur pwd cng: ${randomCode}. FNT`,
-      };
-      
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log('Error:', error);
-        } else {
-          console.log('Email sent:', info.response);
-        }
-      });
-      
       res.send("Temp success"); // TODO
     }
   );
@@ -321,6 +294,7 @@ app.post("/keyword", async function (req, res) {
   let userKeywords = await getUserKeywords(req.user.email);
 
   sentKeyword = sentKeyword.trim(); // remove spaces from start, end
+  setKeyword = sentKeyword.toUpperCase(); // set all to uppercase
 
   let occurrences = 0;
   if(userKeywords != null){
@@ -436,6 +410,19 @@ async function getUserName(user_email){
     console.log(err.stack);
   }
 }
+
+async function getUserLastName(user_email){
+  try {
+    const RES = await pool.query(
+      `SELECT surname FROM subscribers
+        WHERE email = '${user_email}'`,
+    );
+    return RES.rows[0].surname;
+  } catch (err) {
+    console.log(err.stack);
+  }
+}
+
 
 async function getUserEmail(user_id) {
   try {
