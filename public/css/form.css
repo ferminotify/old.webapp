@@ -6,8 +6,12 @@
     margin: 13px 0;
 }
 
-.post-form-msg a{
-    color: var(--primary-color)
+.formContainer a{
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.formContainer a:hover{
+    text-decoration: underline;
 }
 
 #form{

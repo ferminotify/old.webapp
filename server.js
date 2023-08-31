@@ -93,6 +93,10 @@ app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
   });
 });
 
+app.get("/password_reset", (req, res) => {
+  res.render("password_reset.ejs", { isLogged: req.isAuthenticated() });
+});
+
 app.get("/logout", (req, res, next) => {
   req.logout(function(err){
     if (err) { return next(err); }
