@@ -7,6 +7,7 @@ const session = require("express-session");
 require("dotenv").config();
 const path = require(`path`);
 var bodyParser = require('body-parser')
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,6 +39,18 @@ app.use(passport.session());
 app.use(flash());
 
 app.set('case sensitive routing', true);
+
+// Create a transporter object using custom SMTP settings
+const transporter = nodemailer.createTransport({
+  host: 'smtppro.zoho.eu',
+  port: 587, 
+  secure: false,
+  auth: {
+    user: 'master@ferminotify.me',
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
 
 app.get("/", async (req, res) => {
   if (req.isAuthenticated()) {
@@ -247,6 +260,22 @@ app.post("/user/request-change-password", (req, res) => { // Step 1 of password 
       if (err) {
         throw err;
       }
+
+      const mailOptions = {
+        from: 'Fermi Notify Team <master@ferminotify.me>',
+        to: user_email,
+        subject: 'Secret code',
+        text: `4 ur pwd cng: ${randomCode}. FNT`,
+      };
+      
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log('Error:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
+      });
+      
       res.send("Temp success"); // TODO
     }
   );
