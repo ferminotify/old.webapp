@@ -12,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const initializePassport = require("./passportConfig");
+const { throws } = require("assert");
 initializePassport(passport);
 
 // Parses details from a form
@@ -164,8 +165,10 @@ app.post("/users/register", async (req, res) => {
   );
 });
 
-app.get("/user/change-password", async (req, res) => {
+app.post("/user/change-password", async (req, res) => { // Step 2 of password changin
   let { user_email, random_code, new_password, new_password_conf } = req.body;
+
+  console.log(req.body);
 
   pool.query(
     `SELECT * FROM subscribers
@@ -176,43 +179,67 @@ app.get("/user/change-password", async (req, res) => {
         console.log(err);
       }
 
-      if (RES.rows[0].secret_temp == random_code) { // Password change
+      console.log(results);
+
+      let codeGenerationTimestamp = results.rows[0].secret_temp_timestamp;      
+      const timestamp = new Date(codeGenerationTimestamp);
+      // Date.UTC bc the db is in the UTC timezone
+      const now = new Date();
+      const currentTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+      const timeDifference = currentTime.getTime() - timestamp.getTime();
+      const fifteenMinutesInMilliseconds = 15 * 60 * 1000;
+
+      if (timeDifference > fifteenMinutesInMilliseconds) {
+        // Token expired
+        return res.send("Token expired");
+      }
+
+      if (results.rows[0].secret_temp == random_code) { // Password change
 
         if (new_password != new_password_conf) {
           return res.send("Password not matching"); // TODO
         }
 
-        if (password.length < 6) {
+        if (new_password.length < 6) {
           return res.send("Short password"); // TODO
         }
       
-        hashedPassword = await bcrypt.hash(password, 10);
+        hashedPassword = await bcrypt.hash(new_password, 10);
+
+        console.log(hashedPassword);
 
         pool.query( // Donno if I can embed 2 queries
           `UPDATE subscribers
-            SET password = '$1'
-            WHERE email = '$2';`,
-          [user_email, new_password],
+            SET password = $1, secret_temp = '', secret_temp_timestamp = NULL
+            WHERE email = $2;`,
+          [hashedPassword, user_email],
           (err, results) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log("Success");
             res.send("Success!"); // TODO
           }
         );
+      } else {
+        res.send("Wrong token");
       }
     }
   );
   
 });
 
-app.post("/user/change-password", (req, res) => {
+app.post("/user/request-change-password", (req, res) => { // Step 1 of password changin
   let { user_email } = req.body;
 
   const randomCode = Math.random().toString(36).substring(2, 8); // 6 char long
 
   pool.query(
-    `INSERT INTO subscribers (secret_temp, secret_temp_timestamp)
-      VALUES ($1, CURRENT_TIMESTAMP);`,
-    [randomCode],
-    (err, res) => {
+    `UPDATE subscribers
+      SET secret_temp = $1, secret_temp_timestamp = CURRENT_TIMESTAMP
+      WHERE email = $2;`,
+    [randomCode, user_email],
+    (err, result) => {
       if (err) {
         throw err;
       }
