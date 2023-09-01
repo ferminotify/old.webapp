@@ -99,6 +99,15 @@ app.get("/password_reset", (req, res) => {
   res.render("password_reset.ejs", { isLogged: req.isAuthenticated() });
 });
 
+
+/******* TEMP TESTING *******/
+app.get("/password_new", checkAuthenticated, (req, res) => {
+  res.render("password_new.ejs", { isLogged: req.isAuthenticated() });
+});
+
+
+
+
 app.get("/logout", (req, res, next) => {
   req.logout(function(err){
     if (err) { return next(err); }
@@ -422,7 +431,6 @@ async function getUserLastName(user_email){
     console.log(err.stack);
   }
 }
-
 
 async function getUserEmail(user_id) {
   try {
