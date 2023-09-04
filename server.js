@@ -105,6 +105,10 @@ app.get("/password_new", checkAuthenticated, (req, res) => {
   res.render("password_new.ejs", { isLogged: req.isAuthenticated() });
 });
 
+app.get("/password_otp", checkAuthenticated, (req, res) => {
+  res.render("password_otp.ejs", { isLogged: req.isAuthenticated() });
+});
+
 
 
 
