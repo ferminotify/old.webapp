@@ -266,11 +266,13 @@ app.post("/user/change-password", async (req, res) => { // Step 2 of password ch
   
 });
 
-app.post("/user/request-change-password", (req, res) => { // Step 1 of password changin
+app.post("/user/request-change-password", async (req, res) => { // Step 1 of password changin
   let { user_email } = req.body;
 
-  const randomCode = Math.random().toString(36).substring(2, 8); // 6 char long
+  const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6 char long
 
+  let name = await getUserName(user_email);
+  
   pool.query(
     `UPDATE subscribers
       SET secret_temp = $1, secret_temp_timestamp = CURRENT_TIMESTAMP
@@ -284,8 +286,8 @@ app.post("/user/request-change-password", (req, res) => { // Step 1 of password 
       const mailOptions = {
         from: 'Fermi Notify Team <master@ferminotify.me>',
         to: user_email,
-        subject: 'Secret code',
-        text: `4 ur pwd cng: ${randomCode}. FNT`,
+        subject: `Codice di sicurezza OTP [${randomCode}]`,
+        html: `<!DOCTYPE html><html><body><main style="font-family:Helvetica,Arial,Liberation Serif,sans-serif;background-color:#fff;color:#000;"><table style="max-width:620px;border-collapse:collapse;margin:0 auto 0 auto;text-align:center;font-family:Helvetica,Arial,Liberation Serif,sans-serif;" width="620px" border="0" cellpadding="0" cellspacing="0"><tr style="background-color:#101010;background-image:url('https://ferminotify.me/img/email/2023/bgcolor.png');"><td style="width:100%;padding:30px 0;"><img src="https://ferminotify.me/img/email/2022/logo-long-white-trasp.png" style="width:80%;height:auto;color:#fff" alt="FERMI NOTIFY"></td></tr><tr style="background-color:#101010;background-image:url('https://ferminotify.me/img/email/2023/bgcolor.png');"><td><table style="width:100%;background-color:#fff;border:1px solid #e1e4e8;border-bottom:none;padding:30px 7% 15px 7%;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-left-radius:10px;border-bottom-right-radius:10px;" border="0" cellpadding="0" cellspacing="0"><tr><td><h1 style="margin:0">Il tuo codice di sicurezza</h1></td></tr><tr><td style="text-align:left;"><p style="margin-bottom:15px;font-size:16px;">Ciao ${name},<br>il tuo <b>codice di sicurezza OTP</b> &egrave;:</p><table style="margin-left:auto;margin-right:auto;padding:5px 0;text-align:center;border-radius:10px;"><tr><td><h1 style="margin:0;text-align:center;width:40px">${randomCode[0]}</h1></td><td><h1 style="margin:0;text-align:center;width:40px">${randomCode[1]}</h1></td><td><h1 style="margin:0;text-align:center;width:40px">${randomCode[2]}</h1></td><td><h1 style="margin:0;text-align:center;width:40px">${randomCode[3]}</h1></td><td><h1 style="margin:0;text-align:center;width:40px">${randomCode[4]}</h1></td><td><h1 style="margin:0;text-align:center;width:40px">${randomCode[5]}</h1></td></tr></table></td></tr><tr><td style="font-size:13px;text-align:center;"><p style="margin-bottom:15px;">Il codice scadr&agrave; tra <b>15 minuti</b>.<br>Ti inviamo questo codice perch&eacute; hai richiesto di cambiare la password del tuo account. Se non hai richiesto di cambiare la password, puoi ignorare questa email.</p></td></tr></table></td></tr><!-- footer --><tr style="background-color:#101010;"><td style="padding:30px 7%;font-size:13px;position:relative;background-image:url('https://ferminotify.me/IMG/email/2023/bgcolor.png');background-position:top;background-size:cover;background-color:#101010;"><p style="color:#aaa;">Per supporto o informazioni, rispondere a questa email o contattare <a href="mailto:master@ferminotify.me" style="color:#FF9800">master@ferminotify.me</a>.</p><p style="margin-top:30px;margin-bottom:0;color:#aaa;"><i style="color:#aaa;">Fermi Notify Team</i></p><p style="margin:0"><a href="mailto:master@ferminotify.me" style="color:#FF9800">master@ferminotify.me</a></p><p style="margin-top:0"><a href="https://www.ferminotify.me" target="_blank" style="color:#FF9800">www.ferminotify.me</a></p></td></tr></table></main></body></html>`,
       };
       
       transporter.sendMail(mailOptions, (error, info) => {
