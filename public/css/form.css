@@ -251,9 +251,8 @@ label {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 10px;
-    padding: 40px;
-  }
-  .otp-input-fields input {
+}
+.otp-input-fields input {
     height: auto;
     width: 30%;
     aspect-ratio: 1/1;
@@ -261,11 +260,11 @@ label {
     text-align: center;
     font-size: 16px;
     background-color: #fff;
-  }
-  .otp-input-fields input::-webkit-outer-spin-button, .otp-input-fields input::-webkit-inner-spin-button {
+}
+.otp-input-fields input::-webkit-outer-spin-button, .otp-input-fields input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
-  .otp-input-fields input[type=number] {
+}
+.otp-input-fields input[type=number] {
     -moz-appearance: textfield;
-  }
+}

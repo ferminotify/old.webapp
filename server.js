@@ -118,12 +118,17 @@ app.get("/password_new", checkAuthenticated, (req, res) => {
   res.render("password_new.ejs", { isLogged: req.isAuthenticated() });
 });
 
-app.get("/password_otp", checkAuthenticated, (req, res) => {
-  res.render("password_otp.ejs", { isLogged: req.isAuthenticated() });
-});
-
-
-
+function redirect_to_otp(res, req, user_email){
+  res.render("password_otp.ejs", { 
+    isLogged: req.isAuthenticated(),
+    user_email: censorEmail(user_email)
+  });
+}
+function censorEmail(email){
+  const [localPart, domain] = email.split('@');
+  const censoredLocalPart = localPart.charAt(0) + '*'.repeat(localPart.length - 2) + localPart.charAt(localPart.length - 1);
+  return `${censoredLocalPart}@${domain}`;
+}
 
 app.get("/logout", (req, res, next) => {
   req.logout(function(err){
@@ -286,12 +291,14 @@ app.post("/user/request-change-password", (req, res) => { // Step 1 of password 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           console.log('Error:', error);
+          res.send("Error"); // TODO
         } else {
           console.log('Email sent:', info.response);
+          redirect_to_otp(res, req, user_email);
         }
       });
       
-      res.send("Temp success"); // TODO
+      // res.send("Temp success"); // TODO
     }
   );
 });
