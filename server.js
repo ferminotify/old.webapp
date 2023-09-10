@@ -112,24 +112,6 @@ app.get("/password_reset", (req, res) => {
   res.render("password_reset.ejs", { isLogged: req.isAuthenticated() });
 });
 
-
-/******* TEMP TESTING *******/
-app.get("/password_new", checkAuthenticated, (req, res) => {
-  res.render("password_new.ejs", { isLogged: req.isAuthenticated() });
-});
-
-function redirect_to_otp(res, req, user_email){
-  res.render("password_otp.ejs", { 
-    isLogged: req.isAuthenticated(),
-    user_email: censorEmail(user_email)
-  });
-}
-function censorEmail(email){
-  const [localPart, domain] = email.split('@');
-  const censoredLocalPart = localPart.charAt(0) + '*'.repeat(localPart.length - 2) + localPart.charAt(localPart.length - 1);
-  return `${censoredLocalPart}@${domain}`;
-}
-
 app.get("/logout", (req, res, next) => {
   req.logout(function(err){
     if (err) { return next(err); }
@@ -202,71 +184,8 @@ app.post("/users/register", async (req, res) => {
   );
 });
 
-app.post("/user/change-password", async (req, res) => { // Step 2 of password changin
-  let { user_email, random_code, new_password, new_password_conf } = req.body;
 
-  console.log(req.body);
-
-  pool.query(
-    `SELECT * FROM subscribers
-      WHERE email = $1;`,
-    [user_email],
-    async (err, results) => {
-      if (err) {
-        console.log(err);
-      }
-
-      console.log(results);
-
-      let codeGenerationTimestamp = results.rows[0].secret_temp_timestamp;      
-      const timestamp = new Date(codeGenerationTimestamp);
-      // Date.UTC bc the db is in the UTC timezone
-      const now = new Date();
-      const currentTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
-      const timeDifference = currentTime.getTime() - timestamp.getTime();
-      const fifteenMinutesInMilliseconds = 15 * 60 * 1000;
-
-      if (timeDifference > fifteenMinutesInMilliseconds) {
-        // Token expired
-        return res.send("Token expired");
-      }
-
-      if (results.rows[0].secret_temp == random_code) { // Password change
-
-        if (new_password != new_password_conf) {
-          return res.send("Password not matching"); // TODO
-        }
-
-        if (new_password.length < 6) {
-          return res.send("Short password"); // TODO
-        }
-      
-        hashedPassword = await bcrypt.hash(new_password, 10);
-
-        console.log(hashedPassword);
-
-        pool.query( // Donno if I can embed 2 queries
-          `UPDATE subscribers
-            SET password = $1, secret_temp = '', secret_temp_timestamp = NULL
-            WHERE email = $2;`,
-          [hashedPassword, user_email],
-          (err, results) => {
-            if (err) {
-              console.log(err);
-            }
-            console.log("Success");
-            res.send("Success!"); // TODO
-          }
-        );
-      } else {
-        res.send("Wrong token");
-      }
-    }
-  );
-  
-});
-
-app.post("/user/request-change-password", async (req, res) => { // Step 1 of password changin
+app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
   let { user_email } = req.body;
 
   const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6 char long
@@ -280,6 +199,7 @@ app.post("/user/request-change-password", async (req, res) => { // Step 1 of pas
     [randomCode, user_email],
     (err, result) => {
       if (err) {
+        res.send("Error"); // TODO
         throw err;
       }
 
@@ -296,14 +216,84 @@ app.post("/user/request-change-password", async (req, res) => { // Step 1 of pas
           res.send("Error"); // TODO
         } else {
           console.log('Email sent:', info.response);
-          redirect_to_otp(res, req, user_email);
+          res.render("password_otp.ejs", { 
+            isLogged: req.isAuthenticated(),
+            user_email: user_email
+          });
         }
       });
-      
-      // res.send("Temp success"); // TODO
     }
   );
 });
+
+
+app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
+  let { user_email, random_code } = req.body;
+
+  pool.query(
+    `SELECT * FROM subscribers
+      WHERE email = $1;`,
+    [user_email],
+    async (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+
+      let codeGenerationTimestamp = results.rows[0].secret_temp_timestamp;      
+      const timestamp = new Date(codeGenerationTimestamp);
+      // Date.UTC bc the db is in the UTC timezone
+      const now = new Date();
+      const currentTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+      const timeDifference = currentTime.getTime() - timestamp.getTime();
+      const fifteenMinutesInMilliseconds = 15 * 60 * 1000;
+
+      if (timeDifference > fifteenMinutesInMilliseconds) {
+        return res.send("Token expired"); // TODO
+      }
+
+      if (results.rows[0].secret_temp == random_code) { // Password change
+        return res.render("password_new.ejs", { 
+          isLogged: req.isAuthenticated(),
+          user_email: user_email
+        });
+      } else {
+        return res.send("Wrong otp"); // TODO
+      }
+    }
+  );
+});
+
+
+app.post("/user/new-change-password", async (req, res) => { // PWD-CNG #3
+  let { password, password2, user_email } = req.body;
+
+  if (password != password2) {
+    return res.send("Password not matching"); // TODO
+  }
+
+  if (password.length < 6) {
+    return res.send("Short password"); // TODO
+  }
+
+  hashedPassword = await bcrypt.hash(password, 10);
+
+  pool.query(
+    `UPDATE subscribers
+      SET password = $1, secret_temp = '', secret_temp_timestamp = NULL
+      WHERE email = $2;`,
+    [hashedPassword, user_email],
+    (err, results) => {
+      if (err) {
+        res.send("Err"); // TODO
+        console.log(err);
+      }
+      console.log("Success");
+      res.send("Success!"); // TODO
+    }
+  );
+
+});
+
 
 app.post("/notification-preferences", async (req, res) => {
   let option;
