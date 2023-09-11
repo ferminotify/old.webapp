@@ -100,20 +100,9 @@
 </form>
 </div>
 
-<% if (typeof errors != 'undefined') { %> 
-    <div id="alertbanner" class="errorbanner" onclick="this.classList.remove('showAlert'); this.classList.add('hideAlert')">
-        <ul style="list-style: none; padding-left: 0;">
-            <% errors.forEach(error => { %>
-                <li id="alertmessage"><i class="fa-solid fa-circle-exclamation"></i> <%= error.message %></li>
-            <% }) %> 
-        </ul>
-    </div>
-    <script>
-        document.getElementById("alertbanner").classList.add("showAlert");
-    </script>
-<% } %>
+<%- include ('includes/alertbanner.ejs') %>
 
-    <%- include('includes/footer-min.ejs') %>
+<%- include('includes/footer-min.ejs') %>
 
 <script>
     $('input').on('change', function(){

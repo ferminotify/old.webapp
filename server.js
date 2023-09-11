@@ -137,7 +137,7 @@ app.post("/users/register", async (req, res) => {
   }
 
   if (password.length < 6) {
-    errors.push({ message: "La password deve essere almeno 6 caratteri!" });
+    errors.push({ message: "La password deve essere lunga almeno 6 caratteri!" });
   }
 
   if (password !== password2) {
@@ -162,9 +162,8 @@ app.post("/users/register", async (req, res) => {
       }
 
       if (results.rows.length > 0) {
-        return res.render("register", {
-          message: "Email già registrata!"
-        });
+        errors.push({ message: "Email già registrata!" });
+        res.render("register.ejs", { errors });
       } else {
         pool.query(
           `INSERT INTO subscribers (name, surname, email, password, notifications, telegram, gender, notification_preferences)
@@ -175,7 +174,7 @@ app.post("/users/register", async (req, res) => {
             if (err) {
               throw err;
             }
-            req.flash("success_msg", "Ti abbiamo inviato una mail per confermare l'account! (controlla anche la SPAM)");
+            req.flash("success_msg", "Ti abbiamo inviato una mail per confermare l'account! (controlla anche lo SPAM)");
             res.redirect("/login");
           }
         );
@@ -187,6 +186,8 @@ app.post("/users/register", async (req, res) => {
 
 app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
   let { user_email } = req.body;
+  
+  let errors = [];
 
   const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6 char long
 
@@ -199,7 +200,8 @@ app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
     [randomCode, user_email],
     (err, result) => {
       if (err) {
-        res.send("Error"); // TODO
+        errors.push({ message: "Si è verificato un errore! Riprova più tardi." });
+        res.render("password_reset.ejs", { errors, isLogged : req.isAuthenticated()});
         throw err;
       }
 
@@ -213,7 +215,8 @@ app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           console.log('Error:', error);
-          res.send("Error"); // TODO
+          errors.push({ message: "Si è verificato un errore! Riprova più tardi." });
+          res.render("password_otp.ejs", { errors, isLogged : req.isAuthenticated()});
         } else {
           console.log('Email sent:', info.response);
           res.render("password_otp.ejs", { 
@@ -229,6 +232,8 @@ app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
 
 app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
   let { user_email, random_code } = req.body;
+
+  let errors = [];
 
   pool.query(
     `SELECT * FROM subscribers
@@ -248,7 +253,8 @@ app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
       const fifteenMinutesInMilliseconds = 15 * 60 * 1000;
 
       if (timeDifference > fifteenMinutesInMilliseconds) {
-        return res.send("Token expired"); // TODO
+        errors.push({ message: "Il codice OTP è scaduto!" });
+        res.render("password_otp.ejs", { errors, user_email, isLogged : req.isAuthenticated()});
       }
 
       if (results.rows[0].secret_temp == random_code) { // Password change
@@ -257,7 +263,8 @@ app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
           user_email: user_email
         });
       } else {
-        return res.send("Wrong otp"); // TODO
+        errors.push({ message: "Il codice OTP non corrisponde!" });
+        res.render("password_otp.ejs", { errors, user_email, isLogged : req.isAuthenticated()});
       }
     }
   );
@@ -267,12 +274,14 @@ app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
 app.post("/user/new-change-password", async (req, res) => { // PWD-CNG #3
   let { password, password2, user_email } = req.body;
 
+  let errors = [];
+
   if (password != password2) {
-    return res.send("Password not matching"); // TODO
+    errors.push({ message: "Le password non corrispondono!" });
   }
 
   if (password.length < 6) {
-    return res.send("Short password"); // TODO
+    errors.push({ message: "La password deve essere lunga almeno 6 caratteri!" });
   }
 
   hashedPassword = await bcrypt.hash(password, 10);
@@ -284,13 +293,21 @@ app.post("/user/new-change-password", async (req, res) => { // PWD-CNG #3
     [hashedPassword, user_email],
     (err, results) => {
       if (err) {
-        res.send("Err"); // TODO
+        errors.push({ message: "Si è verificato un errore! Riprova più tardi." });
+        res.render("password_new.ejs", { errors, user_email, isLogged : req.isAuthenticated()});
         console.log(err);
+      }else{
+        console.log("Success");
+        req.flash("success_msg", "Password cambiata con successo!");
+        res.redirect("/login");
       }
-      console.log("Success");
-      res.send("Success!"); // TODO
     }
   );
+
+  if (errors.length > 0) {
+    res.render("password_new.ejs", { errors, email });
+    return;
+  }
 
 });
 

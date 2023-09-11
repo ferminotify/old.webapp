@@ -1,0 +1,30 @@
+<% if (typeof errors != 'undefined') { %> 
+	<div id="alertbanner" class="errorbanner">
+		<ul style="list-style: none; padding-left: 0;">
+			<% errors.forEach(error => { %>
+				<li id="alertmessage"><i class="fa-solid fa-circle-exclamation"></i> <%= error.message %></li>
+			<% }) %> 
+		</ul>
+	</div>
+	<script>
+		document.getElementById("alertbanner").style.animation = "showAlert 0.5s ease-in-out forwards";
+	</script>
+<% } %>
+
+<% if(messages.success_msg) { %>
+	<div id="alertbanner" class="successbanner">
+		<p id="alertmessage"><i class="fa-solid fa-check"></i> <%= messages.success_msg %></p>
+	</div>
+	<script>
+		document.getElementById("alertbanner").style.animation = "showAlert 0.5s ease-in-out forwards";
+	</script>
+<% } %>
+
+<% if (messages.error_msg) { %>
+	<div id="alertbanner" class="errorbanner">
+		<p id="alertmessage"><i class="fa-solid fa-circle-exclamation"></i> <%= messages.error %></p>
+	</div>
+	<script>
+		document.getElementById("alertbanner").style.animation = "showAlert 0.5s ease-in-out forwards";
+	</script>
+<% } %>
