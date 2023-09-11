@@ -7,11 +7,13 @@ const session = require("express-session");
 require("dotenv").config();
 const path = require(`path`);
 var bodyParser = require('body-parser')
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 const initializePassport = require("./passportConfig");
+const { throws } = require("assert");
 initializePassport(passport);
 
 // Parses details from a form
@@ -37,6 +39,18 @@ app.use(passport.session());
 app.use(flash());
 
 app.set('case sensitive routing', true);
+
+// Create a transporter object using custom SMTP settings
+const transporter = nodemailer.createTransport({
+  host: 'smtppro.zoho.eu',
+  port: 587, 
+  secure: false,
+  auth: {
+    user: 'master@ferminotify.me',
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
 
 app.get("/", async (req, res) => {
   if (req.isAuthenticated()) {
@@ -76,6 +90,7 @@ app.get("/login", checkAuthenticated, (req, res) => {
 
 app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
   let name = await getUserName(req.user.email);
+  let lastname = await getUserLastName(req.user.email);
   let keywords = await getUserKeywords(req.user.email);
   let telegram = await getUserTelegram(req.user.email);
   let notifications = await getUserNotifications(req.user.email);
@@ -84,12 +99,17 @@ app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
 
   res.render("dashboard", { 
     user: name,
+    lastname: lastname,
     keywords: keywords,
     tgun: telegram,
     n_not: notifications,
     gender: gender,
     n_pref: notificationPreferences
   });
+});
+
+app.get("/password_reset", (req, res) => {
+  res.render("password_reset.ejs", { isLogged: req.isAuthenticated() });
 });
 
 app.get("/logout", (req, res, next) => {
@@ -110,7 +130,7 @@ app.post("/users/register", async (req, res) => {
 
   let errors = [];
 
-  if (!name || !email || 
+  if (!name || !surname || !email || 
       !password || !password2 || 
       !gender) {
     errors.push({ message: "Compila tutti i campi!" });
@@ -148,8 +168,8 @@ app.post("/users/register", async (req, res) => {
       } else {
         pool.query(
           `INSERT INTO subscribers (name, surname, email, password, notifications, telegram, gender, notification_preferences)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-              RETURNING id, password`,
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING id, password`,
           [name, surname, email, hashedPassword, -2, telegramTemporaryCode, gender, 2],
           (err, results) => {
             if (err) {
@@ -163,6 +183,117 @@ app.post("/users/register", async (req, res) => {
     }
   );
 });
+
+
+app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
+  let { user_email } = req.body;
+
+  const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6 char long
+
+  let name = await getUserName(user_email);
+  
+  pool.query(
+    `UPDATE subscribers
+      SET secret_temp = $1, secret_temp_timestamp = CURRENT_TIMESTAMP
+      WHERE email = $2;`,
+    [randomCode, user_email],
+    (err, result) => {
+      if (err) {
+        res.send("Error"); // TODO
+        throw err;
+      }
+
+      const mailOptions = {
+        from: 'Fermi Notify Team <master@ferminotify.me>',
+        to: user_email,
+        subject: `Codice di sicurezza OTP [${randomCode}]`,
+        html: `<!DOCTYPE html><html><body><main style="font-family:Helvetica,Arial,Liberation Serif,sans-serif;background-color:#fff;color:#000;"><table style="max-width:620px;border-collapse:collapse;margin:0 auto 0 auto;text-align:center;font-family:Helvetica,Arial,Liberation Serif,sans-serif;" width="620px" border="0" cellpadding="0" cellspacing="0"><tr style="background-color:#101010;background-image:url('https://ferminotify.me/img/email/2023/bgcolor.png');"><td style="width:100%;padding:30px 0;"><img src="https://ferminotify.me/img/email/2022/logo-long-white-trasp.png" style="width:80%;height:auto;color:#fff" alt="FERMI NOTIFY"></td></tr><tr style="background-color:#101010;background-image:url('https://ferminotify.me/img/email/2023/bgcolor.png');"><td><table style="width:100%;background-color:#fff;border:1px solid #e1e4e8;border-bottom:none;padding:30px 7% 15px 7%;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-left-radius:10px;border-bottom-right-radius:10px;" border="0" cellpadding="0" cellspacing="0"><tr><td><h1 style="margin:0;font-size:24px;">Il tuo codice di sicurezza</h1></td></tr><tr><td style="text-align:left;"><p style="margin-bottom:15px;font-size:16px;">Ciao ${name},<br>il tuo <b>codice di sicurezza OTP</b> &egrave;:</p><table style="margin-left:auto;margin-right:auto;padding:5px 0;text-align:center;border-radius:10px;"><tr><td><h1 style="margin:0;text-align:center;width:30px;font-size:24px">${randomCode[0]}</h1></td><td><h1 style="margin:0;text-align:center;width:30px;font-size:24px">${randomCode[1]}</h1></td><td><h1 style="margin:0;text-align:center;width:30px;font-size:24px">${randomCode[2]}</h1></td><td><h1 style="margin:0;text-align:center;width:30px;font-size:24px">${randomCode[3]}</h1></td><td><h1 style="margin:0;text-align:center;width:30px;font-size:24px">${randomCode[4]}</h1></td><td><h1 style="margin:0;text-align:center;width:30px;font-size:24px">${randomCode[5]}</h1></td></tr></table></td></tr><tr><td style="font-size:13px;text-align:center;"><p style="margin-bottom:15px;">Il codice scadr&agrave; tra <b>15 minuti</b>.<br>Ti inviamo questo codice perch&eacute; hai richiesto di cambiare la password del tuo account. Se non hai richiesto di cambiare la password, puoi ignorare questa email.</p></td></tr></table></td></tr><!-- footer --><tr style="background-color:#101010;"><td style="padding:30px 7%;font-size:13px;position:relative;background-image:url('https://ferminotify.me/IMG/email/2023/bgcolor.png');background-position:top;background-size:cover;background-color:#101010;"><p style="color:#aaa;">Per supporto o informazioni, rispondere a questa email o contattare <a href="mailto:master@ferminotify.me" style="color:#FF9800">master@ferminotify.me</a>.</p><p style="margin-top:30px;margin-bottom:0;color:#aaa;"><i style="color:#aaa;">Fermi Notify Team</i></p><p style="margin:0"><a href="mailto:master@ferminotify.me" style="color:#FF9800">master@ferminotify.me</a></p><p style="margin-top:0"><a href="https://www.ferminotify.me" target="_blank" style="color:#FF9800">www.ferminotify.me</a></p></td></tr></table></main></body></html>`,
+      };
+      
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log('Error:', error);
+          res.send("Error"); // TODO
+        } else {
+          console.log('Email sent:', info.response);
+          res.render("password_otp.ejs", { 
+            isLogged: req.isAuthenticated(),
+            user_email: user_email
+          });
+        }
+      });
+    }
+  );
+});
+
+
+app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
+  let { user_email, random_code } = req.body;
+
+  pool.query(
+    `SELECT * FROM subscribers
+      WHERE email = $1;`,
+    [user_email],
+    async (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+
+      let codeGenerationTimestamp = results.rows[0].secret_temp_timestamp;      
+      const timestamp = new Date(codeGenerationTimestamp);
+      // Date.UTC bc the db is in the UTC timezone
+      const now = new Date();
+      const currentTime = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+      const timeDifference = currentTime.getTime() - timestamp.getTime();
+      const fifteenMinutesInMilliseconds = 15 * 60 * 1000;
+
+      if (timeDifference > fifteenMinutesInMilliseconds) {
+        return res.send("Token expired"); // TODO
+      }
+
+      if (results.rows[0].secret_temp == random_code) { // Password change
+        return res.render("password_new.ejs", { 
+          isLogged: req.isAuthenticated(),
+          user_email: user_email
+        });
+      } else {
+        return res.send("Wrong otp"); // TODO
+      }
+    }
+  );
+});
+
+
+app.post("/user/new-change-password", async (req, res) => { // PWD-CNG #3
+  let { password, password2, user_email } = req.body;
+
+  if (password != password2) {
+    return res.send("Password not matching"); // TODO
+  }
+
+  if (password.length < 6) {
+    return res.send("Short password"); // TODO
+  }
+
+  hashedPassword = await bcrypt.hash(password, 10);
+
+  pool.query(
+    `UPDATE subscribers
+      SET password = $1, secret_temp = '', secret_temp_timestamp = NULL
+      WHERE email = $2;`,
+    [hashedPassword, user_email],
+    (err, results) => {
+      if (err) {
+        res.send("Err"); // TODO
+        console.log(err);
+      }
+      console.log("Success");
+      res.send("Success!"); // TODO
+    }
+  );
+
+});
+
 
 app.post("/notification-preferences", async (req, res) => {
   let option;
@@ -204,6 +335,7 @@ app.post("/keyword", async function (req, res) {
   let userKeywords = await getUserKeywords(req.user.email);
 
   sentKeyword = sentKeyword.trim(); // remove spaces from start, end
+  setKeyword = sentKeyword.toUpperCase(); // set all to uppercase
 
   let occurrences = 0;
   if(userKeywords != null){
@@ -315,6 +447,18 @@ async function getUserName(user_email){
         WHERE email = '${user_email}'`,
     );
     return RES.rows[0].name;
+  } catch (err) {
+    console.log(err.stack);
+  }
+}
+
+async function getUserLastName(user_email){
+  try {
+    const RES = await pool.query(
+      `SELECT surname FROM subscribers
+        WHERE email = '${user_email}'`,
+    );
+    return RES.rows[0].surname;
   } catch (err) {
     console.log(err.stack);
   }

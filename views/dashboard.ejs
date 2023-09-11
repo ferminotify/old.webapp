@@ -650,6 +650,8 @@
 
         // add recommended keyword
         function addRecommendedKeyword(addKw){
+            if(addRecommendedKeyword.disabled) return;
+            addRecommendedKeyword.disabled = true;
             // submit addKw.innerHTML with ajax
             kw2add = addKw.innerHTML;
             $.ajax({
@@ -661,6 +663,7 @@
                 },
                 error: function (error) {
                     console.warn(error);
+                    location.reload();
                 },
             });
         }
@@ -671,15 +674,15 @@
         // if last name is already in keywords
         if (!keywords.some(kw => kw.toLowerCase() === lastname.toLowerCase()))
             recommendedKeywords.push(lastname);
-
+        console.log("lastname: " + lastname);
         // add all recommended keywords to the box
         recommendedKeywords.forEach(kw => {
             recommendedKeywordsBox.innerHTML += `<a onclick="addRecommendedKeyword(this)">${kw}</a>`;
         });
 
-        if(recommendedKeywords.length != 0) document.getElementById("recommended-keywords-paragraph").style.display = "block";
+        if(recommendedKeywords.length > 0) document.getElementById("recommended-keywords-paragraph").style.display = "block";
 
-        console.log(recommendedKeywords);
+        console.log("kw sugg: " + recommendedKeywords);
     </script>
 
     <script>

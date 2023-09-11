@@ -73,7 +73,7 @@
         </div>
         <div class="psw-bar">
             <input type="password" placeholder="Password" name="password" id="password" required class="input-box" onkeyup="passwordLength()">
-            <span id="PSWShowHideIcon" onclick="ShowPSW()"><i class="fa-solid fa-eye-slash"></i></span>
+            <span id="PSWShowHideIcon" onclick="ShowPSW()"><i class="fa-solid fa-eye-slash" style="transform: translateX(2px)"></i></span>
         </div>
     </div>
     <div class="confirm-psw inputs">
@@ -93,7 +93,7 @@
         </select>
     </div>
 
-    <button id="submit-btn" class="btn-bg margin-y15px" style="display: flex; align-items: center; justify-content: center;" onclick="return checkAll()">Registrati</button>
+    <button id="submit-btn" class="btn-bg margin-y15px flex-center" onclick="return checkAll()">Registrati</button>
 
     <p class="post-form-msg">Hai gi&agrave; un account? <a href="/login">Login</a></p>
 
@@ -248,10 +248,5 @@
 </script>
 
 </body>
-
-<!-- preload img -->
-<div id="preloadedImages" style="display: none;">
-	<img src="/img/loading.png">
-</div>
 
 </html>

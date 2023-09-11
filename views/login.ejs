@@ -58,13 +58,13 @@
         <input type="email" placeholder="Email" name="email" id="email" required class="input-box">
     </div>
     <div class="psw inputs">
-        <label for="Password" id="password-label">Password</label>
+        <div class="flex-space-between"><label for="Password" id="password-label">Password</label><a id="ForgotPSW" href="password_reset">Password dimenticata?</a></div>
         <div class="psw-bar">
             <input type="password" placeholder="Password" name="password" id="password" required class="input-box">
-            <span id="PSWShowHideIcon" onclick="ShowPSW()"><i class="fa-solid fa-eye-slash"></i></span>
+            <span id="PSWShowHideIcon" onclick="ShowPSW()"><i class="fa-solid fa-eye-slash" style="transform: translateX(2px)"></i></span>
         </div>
     </div>
-    <button id="submit-btn" class="btn-bg margin-y15px" style="display: flex; align-items: center; justify-content: center;">Accedi</button>
+    <button id="submit-btn" class="btn-bg margin-y15px flex-center">Accedi</button>
 
     <p class="post-form-msg">Non hai un account? <a href="./register">Registrati</a></p>
 
@@ -134,21 +134,6 @@
 
 <script src="/js/ShowPSW.js"></script>
 
-<% if (typeof notOfficial !== 'undefined' ) { %>
-
-    <div id="alertbanner" class="warningbanner">
-        <p id="alertmessage"><i class="fa-solid fa-check"></i> <%= notOfficial %></p>
-    </div>
-    <script>
-        document.getElementById("alertbanner").style.animation = "showAlert 0.5s ease-in-out forwards";
-    </script>
-<% } %>
-
 </body>
-
-<!-- preload img -->
-<div id="preloadedImages" style="display: none;">
-	<img src="/img/loading.png">
-</div>
 
 </html>

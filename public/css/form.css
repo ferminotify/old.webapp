@@ -6,11 +6,16 @@
     margin: 13px 0;
 }
 
-.post-form-msg a{
-    color: var(--primary-color)
+.formContainer a {
+    color: var(--primary-color);
+    text-decoration: none;
 }
 
-#form{
+.formContainer a:hover {
+    text-decoration: underline;
+}
+
+#form {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,24 +23,28 @@
     width: 100%;
 }
 
-#submit-btn:disabled{
+#submit-btn:disabled {
     cursor: not-allowed;
 }
-.inputs-title{
+
+.inputs-title {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
 }
-.inputs-title label{
+
+.inputs-title label {
     padding-right: 10px;
 }
-.input-warning{
+
+.input-warning {
     color: var(--primary-color);
     text-align: right;
+    font-size: 0.7em;
 }
 
 
-.formContainer{
+.formContainer {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,38 +53,39 @@
     height: 100%;
 }
 
-.formContainer *{
+.formContainer * {
     max-width: 980px;
 }
 
-.inputs{
+.inputs {
     width: 50%;
     padding: 0 0 13px 0;
 }
 
-.nomecognome{
+.nomecognome {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.nomecognome div{
+.nomecognome div {
     width: 50%;
 }
 
-.fname{
+.fname {
     padding-right: 10px;
 }
 
-.lname{
+.lname {
     padding-left: 10px;
 }
 
-.title{
+.title {
     color: white;
 }
+
 /* Full-width input fields */
-input{
+input {
     width: calc(100% - 30px);
     padding: 15px;
     margin: 5px 0 0 0;
@@ -87,49 +97,51 @@ input{
     height: 18px;
 }
 
-input:focus{
+input:focus {
     outline-color: var(--primary-color);
     background-color: #fff;
 }
 
-.gender-select:focus{
+.gender-select:focus {
     outline-color: var(--primary-color);
     background-color: #fff;
 }
 
-.inserted{
+.inserted {
     background: #ddd;
 }
 
-@media only screen and (max-width: 850px){
-    .inputs{
+@media only screen and (max-width: 850px) {
+    .inputs {
         width: 80%;
     }
 }
 
-label{
+label {
     color: #fff;
 }
 
-.psw-bar{
+.psw-bar {
     position: relative;
-} 
+}
 
-#PSWShowHideIcon{
+#PSWShowHideIcon {
     position: absolute;
     right: 5px;
-    top: -2px; /* idk */
-    height: 48px; /* input height + input padding */
+    top: -2px;
+    /* idk */
+    height: 48px;
+    /* input height + input padding */
     transform: translate(-50%, 50%);
     cursor: pointer;
 }
 
-.gender{
+.gender {
     display: flex;
     flex-direction: column;
 }
 
-.gender-select{
+.gender-select {
     width: 100%;
     padding: 15px;
     margin: 5px 0 0 0;
@@ -141,21 +153,21 @@ label{
     color: #000;
 }
 
-.gender-select:focus{
+.gender-select:focus {
     outline-color: var(--primary-color);
     background-color: #fff;
 }
 
-.gender-select-placeholder{
+.gender-select-placeholder {
     display: none;
 }
 
-.submit-loading{
+.submit-loading {
     max-height: 100%;
     max-width: 100%;
 }
 
-.rotate-loading{
+.rotate-loading {
     -webkit-animation: rotating 2s linear infinite;
     -moz-animation: rotating 2s linear infinite;
     -ms-animation: rotating 2s linear infinite;
@@ -163,34 +175,41 @@ label{
     animation: rotating 2s linear infinite;
 }
 
-@-webkit-keyframes rotating /* Safari and Chrome */ {
+@-webkit-keyframes rotating
+
+/* Safari and Chrome */
+    {
     from {
-      -webkit-transform: rotate(0deg);
-      -o-transform: rotate(0deg);
-      transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     to {
-      -webkit-transform: rotate(360deg);
-      -o-transform: rotate(360deg);
-      transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-  @keyframes rotating {
+}
+
+@keyframes rotating {
     from {
-      -ms-transform: rotate(0deg);
-      -moz-transform: rotate(0deg);
-      -webkit-transform: rotate(0deg);
-      -o-transform: rotate(0deg);
-      transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     to {
-      -ms-transform: rotate(360deg);
-      -moz-transform: rotate(360deg);
-      -webkit-transform: rotate(360deg);
-      -o-transform: rotate(360deg);
-      transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
+}
+
 /* ---------------------- */
 
 /* ADD KEYWORD BUTTON */
@@ -221,4 +240,31 @@ label{
 
 .addButton i {
     padding: 7px;
+}
+
+
+/*** OTP ***/
+.otp-input-fields {
+    margin: auto;
+    width: auto;
+    max-width: 350px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+}
+.otp-input-fields input {
+    height: auto;
+    width: 30%;
+    aspect-ratio: 1/1;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 16px;
+    background-color: #fff;
+}
+.otp-input-fields input::-webkit-outer-spin-button, .otp-input-fields input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.otp-input-fields input[type=number] {
+    -moz-appearance: textfield;
 }

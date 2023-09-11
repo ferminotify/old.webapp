@@ -11,7 +11,7 @@ function ShowPSW() {
 		document.getElementById("PSWShowHideIcon").innerHTML = '<i class="fa-solid fa-eye"></i>';
 	} else {
 		id.type = "password";
-		document.getElementById("PSWShowHideIcon").innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+		document.getElementById("PSWShowHideIcon").innerHTML = '<i class="fa-solid fa-eye-slash" style="transform: translateX(2px)"></i>';
 	}
 }
 
