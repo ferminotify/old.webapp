@@ -94,18 +94,19 @@
 
         <!-- Keyword form -->
         <div class="section">
-            <h2 class="bigSectionTitle"><i class="fa-solid fa-key"></i> Le tue keywords</h2>
+            <h2 class="bigSectionTitle" style="margin-bottom: 5px;"><i class="fa-solid fa-key"></i> Le tue keywords</h2>
 
             <div class="keywords-container">
-
-                <ul style="list-style: square inside; padding: 0;">
+                <i class="fa-solid fa-pen-to-square keyword-edit-btn" onclick="keywordEdit()"></i>
+                <ul id="keyword-list">
                     <% if (locals.keywords) { %>
                         <% keywords.forEach(kw=> { %>
-                            <li class="keyword">
+                            <li class="keyword" onclick="deleteKeyword(this)">
+                                <span class="keyword-list-bullet"><i class="fa-solid fa-square"></i></span>
                                 <%= kw %>
                             </li>
-                            <% }) %>
-                                <% } %>
+                        <% }) %>
+                    <% } %>
                 </ul>
 
 
@@ -139,6 +140,46 @@
 
             </div>
         </div>
+
+        <script>
+            // edit keywords
+            var is_editing = false;
+            function keywordEdit(){
+                is_editing = !is_editing;
+                if(is_editing){
+                    $(".keyword-list-bullet i").removeClass("fa-square").addClass("fa-square-xmark");
+                    $(".keyword-edit-btn").css("animation", "blink 0.8s ease-in-out infinite alternate");
+                    $(".keyword").addClass("keyword-editing");
+                    $(".keyword").hover(function(){
+                        $(this).find(".keyword-list-bullet i").removeClass("fa-square-xmark").addClass("fa-trash");
+                    }, function(){
+                        $(this).find(".keyword-list-bullet i").removeClass("fa-trash").addClass("fa-square-xmark");
+                    });
+                }else{
+                    $(".keyword-list-bullet i").removeClass("fa-square-xmark").addClass("fa-square");
+                    $(".keyword-edit-btn").css("animation", "none");
+                    $(".keyword").removeClass("keyword-editing");
+                    $(".keyword").off("mouseenter mouseleave");
+                }
+            }
+
+            function deleteKeyword(kw_del){
+                if(is_editing){
+                    $(kw_del).remove();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/keyword',
+                        data: JSON.stringify({keyword: $(kw_del).text()}),
+                        success: function (data) { alert('data: ' + data); },
+                        error: function (error) {
+                            console.warn(error);
+                        },
+                        contentType: "application/json",
+                        dataType: 'json'
+                    });
+                }
+            }
+        </script>
         <!------------------>
 
         <!-- Events -->
