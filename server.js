@@ -84,6 +84,8 @@ app.get("/login", checkAuthenticated, (req, res) => {
   // flash sets a messages variable. passport sets the error message
   if (req.session.flash != undefined){
     console.log(req.session.flash.error);
+    // temp fix TODO
+    req.flash("error_msg", req.session.flash.error);
   }
   res.render("login.ejs");
 });
@@ -158,7 +160,7 @@ app.post("/users/register", async (req, res) => {
     [email],
     (err, results) => {
       if (err) {
-        console.log(err);
+        console.log("ERR REGISTER " + email + ": " + err);
       }
 
       if (results.rows.length > 0) {
@@ -214,11 +216,11 @@ app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
       
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.log('Error:', error);
+          console.log("ERR REQ CHANGE PSW: " + user_email + ": " + error);
           errors.push({ message: "Si è verificato un errore! Riprova più tardi." });
           res.render("password_otp.ejs", { errors, isLogged : req.isAuthenticated()});
         } else {
-          console.log('Email sent:', info.response);
+          console.log('SUCCESS REQ CHANGE PSW EMAIL SENT TO ' + user_email + ': ' + info.response);
           res.render("password_otp.ejs", { 
             isLogged: req.isAuthenticated(),
             user_email: user_email
@@ -241,7 +243,7 @@ app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
     [user_email],
     async (err, results) => {
       if (err) {
-        console.log(err);
+        console.log("ERR OTP CHANGE PSW " + user_email + " " + random_code + ": " + err);
       }
 
       let codeGenerationTimestamp = results.rows[0].secret_temp_timestamp;      
@@ -263,6 +265,7 @@ app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
           user_email: user_email
         });
       } else {
+        console.log("WARN OTP CHANGE PSW NOT CORRECT " + user_email + "; input: " + random_code + "; random_code: " + results.rows[0].secret_temp);
         errors.push({ message: "Il codice OTP non corrisponde!" });
         res.render("password_otp.ejs", { errors, user_email, isLogged : req.isAuthenticated()});
       }
@@ -295,9 +298,9 @@ app.post("/user/new-change-password", async (req, res) => { // PWD-CNG #3
       if (err) {
         errors.push({ message: "Si è verificato un errore! Riprova più tardi." });
         res.render("password_new.ejs", { errors, user_email, isLogged : req.isAuthenticated()});
-        console.log(err);
+        console.log("ERR NEW PASSWORD " + user_email + ": " + err);
       }else{
-        console.log("Success");
+        console.log("SUCCESS NEW PASSWORD " + user_email);
         req.flash("success_msg", "Password cambiata con successo!");
         res.redirect("/login");
       }
@@ -333,7 +336,7 @@ app.post("/notification-preferences", async (req, res) => {
     [option, req.user.email],
     (err, results) => {
       if (err) {
-        console.log(err);
+        console.log("ERR NOTIFICATION PREF" + req.body.email + ": " + err);
         throw err;
       }
     }
@@ -371,7 +374,7 @@ app.post("/keyword", async function (req, res) {
       [sentKeyword, req.user.email],
       (err, results) => {
         if (err) {
-          console.log(err);
+          console.log("ERR DEL KW " + req.user.email + ": " + err);
           throw err;
         }
       }
@@ -384,7 +387,7 @@ app.post("/keyword", async function (req, res) {
       [sentKeyword, req.user.email],
       (err, results) => {
         if (err) {
-          console.log(err);
+          console.log("ERR ADD KW " + req.user.email + ": " + err);
           throw err;
         }
       }
@@ -465,7 +468,7 @@ async function getUserName(user_email){
     );
     return RES.rows[0].name;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR GET USERNAME " + user_email + ": " + err.stack);
   }
 }
 
@@ -477,7 +480,7 @@ async function getUserLastName(user_email){
     );
     return RES.rows[0].surname;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR GET LAST NAME " + user_email + ": " + err.stack);
   }
 }
 
@@ -489,7 +492,7 @@ async function getUserEmail(user_id) {
     );
     return RES.rows[0].email;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR GET EMAIL " + user_id + ": " + err.stack);
   }
 }
 
@@ -501,7 +504,7 @@ async function getUserKeywords(user_email){
     );
     return RES.rows[0].tags;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR GET KW " + user_email + ": " + err.stack);
   }
 }
 
@@ -524,7 +527,7 @@ async function getUserTelegram(user_email){
     );
     return RES.rows[0].telegram;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR GET TG " + user_email + ": " + err.stack);
   }
 }
 
@@ -536,7 +539,7 @@ async function getUserNotifications(user_email){
     );
     return RES.rows[0].notifications;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR GET NOTIFICATIONS " + user_email + ": " + err.stack);
   }
 }
 
@@ -548,7 +551,7 @@ async function getUserGender(user_email){
     );
     return RES.rows[0].gender;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR GET GENDER " + user_email + ": " + err.stack);
   }
 }
 
@@ -560,7 +563,7 @@ async function getUserNotificationPreferences(user_email) {
     );
     return RES.rows[0].notification_preferences;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR GET NOTIFICATION PREF " + user_email + ": " + err.stack);
   }
 }
 
@@ -573,7 +576,7 @@ async function incrementNumberNotification(telegramId){
     );
     return RES;
   } catch (err) {
-    console.log(err.stack);
+    console.log("ERR ADD NORIFICATIONS " + telegramId + ": " + err.stack);
   }
 }
 
