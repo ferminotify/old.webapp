@@ -177,6 +177,8 @@
                         contentType: "application/json",
                         dataType: 'json'
                     });
+                    
+                    //events(); // TODO update events without reloading the page + update recommended keywords
                 }
             }
         </script>
@@ -434,13 +436,19 @@
 
     <script>
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSn-iVUb73XGXN7qWU0S2njYO8yl8LFv0V-1a3VTU7mPB6rJUqYasGPJcmWyc1wGvjDd7IWH3qci75l/pub?gid=0&single=true&output=csv";
-        // get keywords from front end list
-        const keywords = [];
-        $(".keyword").each(function () {
-            // remoce spaces unless it's between words
-            keywords.push($(this).text().replace(/\s+/g, ' ').trim());
-        });
 
+        // get keywords from front end list
+        function getKeywords(){
+            var tempArray = [];
+            $(".keyword").each(function () {
+                // remoce spaces unless it's between words
+                tempArray.push($(this).text().replace(/\s+/g, ' ').trim());
+            });
+            return tempArray;
+        }
+        
+        var keywords = getKeywords();
+        
         var eventRunning;
 
         console.log(keywords);
@@ -455,6 +463,7 @@
         }
 
         function events(){
+            keywords = getKeywords(); // get keywords again so that if a keyword is deleted it's possible to update events without reloading the page
             (async function fetchData() {
                 try {
                     $('#events .error-container').remove();
@@ -709,21 +718,47 @@
             });
         }
 
-        var recommendedKeywords = [];
-        var recommendedKeywordsBox = document.getElementById("recommended-keywords");
-        var lastname = "<%= locals.lastname %>".toUpperCase();
-        // if last name is already in keywords
-        if (!keywords.some(kw => kw.toLowerCase() === lastname.toLowerCase()))
-            recommendedKeywords.push(lastname);
-        console.log("lastname: " + lastname);
-        // add all recommended keywords to the box
-        recommendedKeywords.forEach(kw => {
-            recommendedKeywordsBox.innerHTML += `<a onclick="addRecommendedKeyword(this)">${kw}</a>`;
-        });
+        // fetch get class
+        async function getClasse(url) {
+            console.log("fetch " + url);
+            const response = await fetch(url);
+            const data = await response.json();
+            if(data.class) return data.class.toUpperCase();
+            else{
+                console.warn(data.error + " " + data.description);
+                return null;
+            }
+        }
 
-        if(recommendedKeywords.length > 0) document.getElementById("recommended-keywords-paragraph").style.display = "block";
+        async function getRecommendedKeywords(){
+            var recommendedKeywords = [];
+            var recommendedKeywordsBox = document.getElementById("recommended-keywords");
 
-        console.log("kw sugg: " + recommendedKeywords);
+            // GET LAST NAME 
+            var lastname = "<%= locals.lastname %>".toUpperCase().replace(/\s+/g, ' ').trim();
+            console.log("lastname: " + lastname);
+            // if last name is already in keywords
+            if (!keywords.some(kw => kw.toUpperCase() === lastname.toUpperCase()))
+                recommendedKeywords.push(lastname);
+
+            // GET CLASSE
+            var name = "<%= locals.user %>".toUpperCase().replace(/\s+/g, ' ').trim();
+            var fermiapi_getClass_url = `https://fermiapi.kliu.win/?name=${name}&surname=${lastname}`;
+            var classe = await getClasse(fermiapi_getClass_url);
+            console.log("classe: " + classe);
+            if (classe && !keywords.some(kw => kw.toUpperCase() === classe.toUpperCase()))
+                recommendedKeywords.push(classe);
+
+            // divide kw with commas
+            var recommendedKeywordsOutput = `<a onclick="addRecommendedKeyword(this)">${recommendedKeywords.join('</a>, <a onclick="addRecommendedKeyword(this)">')}</a>`;
+            recommendedKeywordsBox.innerHTML = recommendedKeywordsOutput;
+
+            if(recommendedKeywords.length > 0) document.getElementById("recommended-keywords-paragraph").style.display = "block";
+
+            console.log("kw sugg: " + recommendedKeywords);
+        }
+
+        getRecommendedKeywords();
     </script>
 
     <script>
