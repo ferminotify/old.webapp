@@ -82,8 +82,8 @@ app.get("/recruiting", checkAuthenticated, (req, res) => {
 
 app.get("/login", checkAuthenticated, (req, res) => {
   // flash sets a messages variable. passport sets the error message
-  if (req.session.flash != undefined){
-    console.log(req.session.flash.error);
+  if (req.session.flash != undefined && req.session.flash.error != undefined){
+    console.log("ERR LOG IN: " + req.session.flash.error);
     // temp fix TODO
     req.flash("error_msg", req.session.flash.error);
   }
@@ -91,6 +91,9 @@ app.get("/login", checkAuthenticated, (req, res) => {
 });
 
 app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
+  
+  console.log("SUCCESS LOG IN: " + req.user.email);
+
   let name = await getUserName(req.user.email);
   let lastname = await getUserLastName(req.user.email);
   let keywords = await getUserKeywords(req.user.email);
@@ -192,8 +195,6 @@ app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
   let errors = [];
 
   const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6 char long
-
-  let name = await getUserName(user_email);
   
   pool.query(
     `UPDATE subscribers
