@@ -399,6 +399,19 @@ header{
     color: var(--primary-color);
 }
 
+.highlight-hover:hover{
+    color: var(--primary-color);
+}
+.highlight-hover:hover a{
+    color: var(--primary-color);
+}
+/* devices without hover functionality */
+@media (hover: none) {
+    .highlight-hover{
+        color: var(--primary-color);
+    }
+}
+
 /* NAVBAR */
 .nav-links li a span {
     color: white;

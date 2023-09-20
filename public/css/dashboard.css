@@ -168,6 +168,11 @@
     display: none;
     width: 100%;
 }
+@media (hover: none){
+    #recommended-keywords .highlight-hover span{
+        color: #fff;
+    }
+}
 
 
 /* REPORT PROBLEM */
