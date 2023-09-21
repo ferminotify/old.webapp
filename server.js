@@ -194,6 +194,8 @@ app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
   
   let errors = [];
 
+  let name = await getUserName(user_email);
+
   const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6 char long
   
   pool.query(
