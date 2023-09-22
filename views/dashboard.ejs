@@ -744,7 +744,7 @@
             // GET CLASSE
             var name = "<%= locals.user %>".toUpperCase().replace(/\s+/g, ' ').trim();
             var fermiapi_getClass_url = `https://fermiapi.kliu.win/?name=${name}&surname=${lastname}`;
-            var classe = "5CIIN";
+            var classe = await getClasse(fermiapi_getClass_url);
             console.log("classe: " + classe);
             if (classe && !keywords.some(kw => kw.toUpperCase() === classe.toUpperCase()))
                 recommendedKeywords.push(classe);
