@@ -206,7 +206,7 @@ app.post("/user/request-change-password", async (req, res) => { // PWD-CNG #1
     (err, result) => {
       if (err) {
         errors.push({ message: "Si è verificato un errore! Riprova più tardi." });
-        res.render("password_reset.ejs", { errors, isLogged : req.isAuthenticated()});
+        res.render("password_reset.ejs", { errors, isLogged : req.isAuthenticated()}); // GET NOT RENDER TODO
         throw err;
       }
 
@@ -264,6 +264,7 @@ app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
 
       if (results.rows[0].secret_temp == random_code) { // Password change
         return res.render("password_new.ejs", { 
+          random_code,
           isLogged: req.isAuthenticated(),
           user_email: user_email
         });
@@ -278,10 +279,32 @@ app.post("/user/otp-change-password", async (req, res) => { // PWD-CNG #2
 
 
 app.post("/user/new-change-password", async (req, res) => { // PWD-CNG #3
-  let { password, password2, user_email } = req.body;
+  let { password, password2, user_email, random_code } = req.body;
 
   let errors = [];
 
+  let email_otp_matches = pool.query(
+    `SELECT * FROM subscribers
+      WHERE email = $1;`,
+    [user_email],
+    async (err, results) => {
+      if (err) {
+        console.log("ERR NEW PSW " + user_email + " " + random_code + ": " + err);
+      }
+
+      // random_code is not the same for email
+      if (results.rows[0].secret_temp != random_code) {
+        console.log("ERR NEW PSW OTP DOES NOT MATCH EMAIL " + user_email + ": random_code" + random_code + "; " + "secret_temp: " + results.rows[0].secret_temp);
+        req.flash("error_msg", "Si è verificato un errore! Riprova più tardi.");
+        res.redirect("/password_reset");
+        return 0;
+      }
+      return 1;
+    }
+  );
+
+  if(!email_otp_matches) return;
+  
   if (password != password2) {
     errors.push({ message: "Le password non corrispondono!" });
   }
@@ -300,7 +323,6 @@ app.post("/user/new-change-password", async (req, res) => { // PWD-CNG #3
     (err, results) => {
       if (err) {
         errors.push({ message: "Si è verificato un errore! Riprova più tardi." });
-        res.render("password_new.ejs", { errors, user_email, isLogged : req.isAuthenticated()});
         console.log("ERR NEW PASSWORD " + user_email + ": " + err);
       }else{
         console.log("SUCCESS NEW PASSWORD " + user_email);
@@ -311,8 +333,7 @@ app.post("/user/new-change-password", async (req, res) => { // PWD-CNG #3
   );
 
   if (errors.length > 0) {
-    res.render("password_new.ejs", { errors, email });
-    return;
+    res.render("password_new.ejs", { random_code, errors, user_email, isLogged : req.isAuthenticated()});
   }
 
 });

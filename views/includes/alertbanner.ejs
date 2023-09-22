@@ -8,6 +8,9 @@
 	</div>
 	<script>
 		document.getElementById("alertbanner").style.animation = "showAlert 0.5s ease-in-out forwards";
+		document.getElementById("alertbanner").addEventListener("click", function() {
+			document.getElementById("alertbanner").style.animation = "hideAlert 0.5s ease-in-out forwards";
+		});
 	</script>
 <% } %>
 
@@ -17,14 +20,20 @@
 	</div>
 	<script>
 		document.getElementById("alertbanner").style.animation = "showAlert 0.5s ease-in-out forwards";
+		document.getElementById("alertbanner").addEventListener("click", function() {
+			document.getElementById("alertbanner").style.animation = "hideAlert 0.5s ease-in-out forwards";
+		});
 	</script>
 <% } %>
 
 <% if (messages.error_msg) { %>
 	<div id="alertbanner" class="errorbanner">
-		<p id="alertmessage"><i class="fa-solid fa-circle-exclamation"></i> <%= messages.error %></p>
+		<p id="alertmessage"><i class="fa-solid fa-circle-exclamation"></i> <%= messages.error_msg %></p>
 	</div>
 	<script>
 		document.getElementById("alertbanner").style.animation = "showAlert 0.5s ease-in-out forwards";
+		document.getElementById("alertbanner").addEventListener("click", function() {
+			document.getElementById("alertbanner").style.animation = "hideAlert 0.5s ease-in-out forwards";
+		});
 	</script>
 <% } %>
