@@ -215,6 +215,9 @@ async function getClasse(url) {
       resolve(null);
     });
   });
+  // remove spaces (it can happen that the space is in between es. 5I TEL)
+  classe = await classe;
+  classe = classe.replace(/\s/g, '');
   return classe;
 }
 
