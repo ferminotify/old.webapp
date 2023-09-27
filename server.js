@@ -127,11 +127,102 @@ app.get("/logout", (req, res, next) => {
 app.get("/users/register/confirmation/:id", async (req, res, next) => {
   let userId = req.params.id;
   const a = await incrementNumberNotification(userId);
+
+  // set classe kw
+  let email = await getUserEmailWithTelegramID(userId);
+  let classe_kw = await getUserClass(email);
+  
+  if(classe_kw) {
+    pool.query(
+      `UPDATE subscribers
+        SET tags = array_append(tags, $1)
+        WHERE email = $2;`,
+      [classe_kw, email],
+      (err, results) => {
+        if (err) {
+          console.log("ERR ADD CLASSE KW " + email + ": " + err);
+          throw err;
+        }else{
+          console.log("SUCCESS ADD CLASSE KW TO " + email + ": " + classe_kw);
+        }
+      }
+    );
+  }
+
   res.redirect("/login");
 });
 
+async function getUserEmailWithTelegramID(telegramId) {
+  try {
+    const RES = await pool.query(
+      `SELECT email FROM subscribers
+        WHERE telegram = '${telegramId}'`,
+    );
+    return RES.rows[0].email;
+  } catch (err) {
+    console.log("ERR GET EMAIL WITH TG ID " + telegramId + ": " + err.stack);
+  }
+}
+async function getUserClass(email){
+  let name = await getUserName(email);
+  name = name.toString().trim().toUpperCase();
+
+  let lastname = await getUserLastName(email);
+  lastname = lastname.toString().trim().toUpperCase();
+
+  var fermiapi_getClass_url = `https://fermiapi.kliu.win/?name=${name}&surname=${lastname}`;
+
+  let classe = await getClasse(fermiapi_getClass_url);
+
+  console.log(`GET CLASSE ${email}: ${name}, ${lastname}: ${classe} (from ${fermiapi_getClass_url})`);
+
+  return classe;
+}
+  
+const http = require('http');
+const https = require('https');
+
+async function getClasse(url) {
+  let classe = new Promise((resolve, reject) => {
+    const protocol = url.startsWith('https') ? https : http;
+
+    protocol.get(url, (response) => {
+      let data = '';
+
+      // A chunk of data has been received.
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      // The whole response has been received.
+      response.on('end', () => {
+        try {
+          const jsonData = JSON.parse(data);
+
+          if (jsonData.class) {
+            resolve(jsonData.class.toUpperCase());
+          } else {
+            console.log("ERR GET CLASSE: " + jsonData.error + " " + jsonData.description);
+            resolve(null);
+          }
+        } catch (error) {
+          console.error("ERR GET CLASSE PARSING JSON: ", error);
+          resolve(null);
+        }
+      });
+    }).on('error', (error) => {
+      console.error("ERR GET CLASSE DATA: ", error);
+      resolve(null);
+    });
+  });
+  return classe;
+}
+
 app.post("/users/register", async (req, res) => {
   let { name, surname, email, password, password2, gender } = req.body;
+
+  name = name.trim();
+  surname = surname.trim();
 
   let errors = [];
 
@@ -379,7 +470,7 @@ app.post("/keyword", async function (req, res) {
   let userKeywords = await getUserKeywords(req.user.email);
 
   sentKeyword = sentKeyword.trim(); // remove spaces from start, end
-  setKeyword = sentKeyword.toUpperCase(); // set all to uppercase
+  sentKeyword = sentKeyword.toUpperCase(); // set all to uppercase
 
   let occurrences = 0;
   if(userKeywords != null){
@@ -598,6 +689,7 @@ async function incrementNumberNotification(telegramId){
          SET notifications = notifications + 1
        WHERE telegram = '${telegramId}' AND notifications = -1;`
     );
+    console.log("SUCCESS CONFIRMATION TG ID: " + telegramId);
     return RES;
   } catch (err) {
     console.log("ERR ADD NORIFICATIONS " + telegramId + ": " + err.stack);

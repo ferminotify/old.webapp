@@ -131,10 +131,8 @@
 
                 <p class="sub-description" id="maggioriInfo"><i class="fa-solid fa-circle-info"></i> <span style="text-decoration: underline; text-decoration-color: var(--primary-color)">Maggiori informazioni</span></p>
                 <ul class="keywords-info" id="keywordsInfo" style="display: none;">
-                    <li>Aggiungi le parole chiave alla lista per essere notificat<%= gender=='M' ?'o':(gender=='F' ?'a':'ǝ') %> quando è presente un evento che la riguarda nel calendario giornaliero. Ti consigliamo di inserire la tua classe e il tuo cognome.
-                    </li>
-                    <li>Per rimuovere una parola chiave, reinseriscila.</li>
-                    <li>Le keywords non sono case sensitive: &egrave; indifferente scriverle in maiuscolo o in minuscolo.</li>
+                    <li>Aggiungi le parole chiave alla lista per essere notificat<%= gender=='M' ?'o':(gender=='F' ?'a':'ǝ') %> quando è presente un evento che la riguarda nel calendario giornaliero. Ti consigliamo di inserire la tua classe e il tuo cognome.</li>
+                    <li>Per rimuovere una parola chiave, reinseriscila o clicca sul bottone <i class="fa-solid fa-pen-to-square"></i>.</li>
                     <li>Per pi&ugrave; informazioni, visita il <a href="./faq" style="text-decoration:underline">FAQ</a>.</li>
                 </ul>
 
@@ -448,6 +446,8 @@
         }
         
         var keywords = getKeywords();
+
+        if(keywords.length == 0) $(".keyword-edit-btn").hide();
         
         var eventRunning;
 
