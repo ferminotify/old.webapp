@@ -200,6 +200,9 @@ async function getClasse(url) {
           const jsonData = JSON.parse(data);
           if (jsonData.students.length == 1) {
             resolve(jsonData.students[0].classe.toUpperCase());
+          } else if (jsonData.students.length > 1) {
+            console.log("ERR GET CLASSE: more than one student found");
+            resolve(null);
           } else {
             console.log("ERR GET CLASSE: " + jsonData.error + " " + jsonData.description);
             resolve(null);
