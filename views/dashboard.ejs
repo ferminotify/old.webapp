@@ -723,7 +723,7 @@
             console.log("fetch " + url);
             const response = await fetch(url);
             const data = await response.json();
-            if(data.class) return data.class.toUpperCase();
+            if(data.students.length == 1) return data.students[0].class.toUpperCase();
             else{
                 console.warn(data.error + " " + data.description);
                 return null;
