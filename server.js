@@ -199,7 +199,7 @@ async function getClasse(url) {
         try {
           const jsonData = JSON.parse(data);
           if (jsonData.students.length == 1) {
-            resolve(jsonData.students[0].class.toUpperCase());
+            resolve(jsonData.students[0].classe.toUpperCase());
           } else {
             console.log("ERR GET CLASSE: " + jsonData.error + " " + jsonData.description);
             resolve(null);
