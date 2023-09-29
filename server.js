@@ -91,8 +91,6 @@ app.get("/login", checkAuthenticated, (req, res) => {
 });
 
 app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
-  
-  console.log("SUCCESS LOG IN: " + req.user.email);
 
   let name = await getUserName(req.user.email);
   let lastname = await getUserLastName(req.user.email);
@@ -101,6 +99,8 @@ app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
   let notifications = await getUserNotifications(req.user.email);
   let gender = await getUserGender(req.user.email);
   let notificationPreferences = await getUserNotificationPreferences(req.user.email);
+
+  console.log("SUCCESS LOG IN: " + req.user.email + " - kw: " + keywords);
 
   res.render("dashboard", { 
     user: name,
