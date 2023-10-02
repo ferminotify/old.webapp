@@ -170,7 +170,7 @@ async function getUserClass(email){
   let lastname = await getUserLastName(email);
   lastname = lastname.toString().trim().toUpperCase();
 
-  var fermiapi_getClass_url = `https://fermiapi.kliu.win/?name=${name}&surname=${lastname}`;
+  var fermiapi_getClass_url = `https://fermiapi.kliu.win/get-class?firstname=${name}&lastname=${lastname}`;
 
   let classe = await getClasse(fermiapi_getClass_url);
 
@@ -274,6 +274,8 @@ app.post("/users/register", async (req, res) => {
           (err, results) => {
             if (err) {
               throw err;
+            } else {
+              console.log("SUCCESS REGISTER WAITING FOR CONFIRMATION: " + email);
             }
             req.flash("success_msg", "Ti abbiamo inviato una mail per confermare l'account! (controlla anche lo SPAM)");
             res.redirect("/login");

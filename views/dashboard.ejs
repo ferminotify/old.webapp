@@ -723,11 +723,18 @@
             console.log("fetch " + url);
             const response = await fetch(url);
             const data = await response.json();
-            if(data.students.length == 1) return data.students[0].classe.toUpperCase();
+            if(data.students && data.students.length == 1) return data.students[0].classe.toUpperCase();
             else{
                 console.warn(data.error + " " + data.description);
                 return null;
             }
+        }
+
+        async function lastnameExists(lastname){
+            var fermiapi_lastnameExists_url = `https://fermiapi.kliu.win/lastname-exists?lastname=${lastname}`;
+            const response = await fetch(fermiapi_lastnameExists_url);
+            const data = await response.json();
+            return data.exists;
         }
 
         async function getRecommendedKeywords(){
@@ -736,14 +743,17 @@
 
             // GET LAST NAME 
             var lastname = "<%= locals.lastname %>".toUpperCase().replace(/\s+/g, ' ').trim();
-            console.log("lastname: " + lastname);
-            // if last name is already in keywords
-            if (!keywords.some(kw => kw.toUpperCase() === lastname.toUpperCase()))
-                recommendedKeywords.push(lastname);
+            // IF LAST NAME EXISTS from api
+            if(await lastnameExists(lastname)){
+                console.log("lastname: " + lastname);
+                // if last name is already in keywords
+                if (!keywords.some(kw => kw.toUpperCase() === lastname.toUpperCase()))
+                    recommendedKeywords.push(lastname);
+            }
 
             // GET CLASSE
             var name = "<%= locals.user %>".toUpperCase().replace(/\s+/g, ' ').trim();
-            var fermiapi_getClass_url = `https://fermiapi.kliu.win/?name=${name}&surname=${lastname}`;
+            var fermiapi_getClass_url = `https://fermiapi.kliu.win/get-class?firstname=${name}&lastname=${lastname}`;
             var classe = await getClasse(fermiapi_getClass_url);
             if(classe != null) classe = classe.replace(/\s/g, '');
             console.log("classe: " + classe);
