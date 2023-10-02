@@ -755,10 +755,20 @@
             var name = "<%= locals.user %>".toUpperCase().replace(/\s+/g, ' ').trim();
             var fermiapi_getClass_url = `https://fermiapi.kliu.win/get-class?firstname=${name}&lastname=${lastname}`;
             var classe = await getClasse(fermiapi_getClass_url);
-            if(classe != null) classe = classe.replace(/\s/g, '');
-            console.log("classe: " + classe);
-            if (classe && !keywords.some(kw => kw.toUpperCase() === classe.toUpperCase()))
-                recommendedKeywords.push(classe);
+            let classes = [];
+            if(classe.includes('(') && classe.includes(')')) {
+                classes.push(classe.match(/^[^\(]+/)[0]); // fuori parentesi
+                classes.push(classe.match(/\((.*?)\)/)[1]); // dentro parentesi
+            }else{
+                classes.push(classe); // senza parentesi
+            }
+            //if(classe != null) classe = classe.replace(/\s/g, '');
+            console.log("classe: " + classes);
+            forEach(classes, function(classe){
+                // if classe is already in keywords
+                if (!keywords.some(kw => kw.toUpperCase() === classe.toUpperCase()))
+                    recommendedKeywords.push(classe);
+            });
 
             // divide kw with commas
             var recommendedKeywordsOutput = `<span class="highlight-hover" style="cursor:pointer;font-weight:700" onclick="addRecommendedKeyword(this.querySelector('span'))"><i class="fa-solid fa-square-plus"></i> <span>${recommendedKeywords.join('</span></span>, <span class="highlight-hover" style="cursor:pointer;font-weight:700"  onclick="addRecommendedKeyword(this.querySelector(\'span\'))"><i class="fa-solid fa-square-plus"></i> <span>')}</span></span>`;

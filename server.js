@@ -132,10 +132,10 @@ app.get("/users/register/confirmation/:id", async (req, res, next) => {
   let email = await getUserEmailWithTelegramID(userId);
   let classe_kw = await getUserClass(email);
   
-  if(classe_kw) {
+  if(classe_kw != null) {
     pool.query(
       `UPDATE subscribers
-        SET tags = array_append(tags, $1)
+        SET tags = array_cat(tags, $1)
         WHERE email = $2;`,
       [classe_kw, email],
       (err, results) => {
@@ -174,9 +174,19 @@ async function getUserClass(email){
 
   let classe = await getClasse(fermiapi_getClass_url);
 
-  console.log(`GET CLASSE ${email}: ${name}, ${lastname}: ${classe} (from ${fermiapi_getClass_url})`);
+  let classes = [];
 
-  return classe;
+  // es. 5E ELE (5E ELE ET)
+  if(classe.includes('(') && classe.includes(')')) {
+    classes.push(classe.match(/^[^\(]+/)[0]); // fuori parentesi
+    classes.push(classe.match(/\((.*?)\)/)[1]); // dentro parentesi
+  }else{
+    classes.push(classe); // senza parentesi
+  }
+
+  console.log(`GET CLASSE ${email}: ${name},${lastname}: ${classes} (from ${fermiapi_getClass_url})`);
+
+  return classes;
 }
   
 const http = require('http');
@@ -275,7 +285,7 @@ app.post("/users/register", async (req, res) => {
             if (err) {
               throw err;
             } else {
-              console.log("SUCCESS REGISTER WAITING FOR CONFIRMATION: " + email);
+              console.log("SUCCESS REGISTER WAITING FOR CONFIRMATION: " + email + " - " + telegramTemporaryCode);
             }
             req.flash("success_msg", "Ti abbiamo inviato una mail per confermare l'account! (controlla anche lo SPAM)");
             res.redirect("/login");
