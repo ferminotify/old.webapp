@@ -764,7 +764,7 @@
             }
             //if(classe != null) classe = classe.replace(/\s/g, '');
             console.log("classe: " + classes);
-            forEach(classes, function(classe){
+            classes.forEach(classe => {
                 // if classe is already in keywords
                 if (!keywords.some(kw => kw.toUpperCase() === classe.toUpperCase()))
                     recommendedKeywords.push(classe);
