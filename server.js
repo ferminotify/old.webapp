@@ -128,6 +128,11 @@ app.get("/users/register/confirmation/:id", async (req, res, next) => {
   let userId = req.params.id;
 
   let email = await getUserEmailWithTelegramID(userId);
+  if(email == undefined){
+    req.flash("error_msg", "Link di conferma non valido!");
+    console.log("ERR CONFIRMATION " + userId + ": email not found");
+    return res.redirect("/login");
+  }
   if(await getNumberNotification(email) > -1){
     req.flash("error_msg", "Account già confermato! Fai il login per accedere.");
     return res.redirect("/login");
