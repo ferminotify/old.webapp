@@ -133,36 +133,25 @@ app.get("/users/register/confirmation/:id", async (req, res, next) => {
   let classe_kw = await getUserClass(email);
   let userKeywords = await getUserKeywords(email);
   
-  if (classe_kw != null && userKeywords != null) {
-    let allNotIncluded = true;
-  
-    for (const kw of classe_kw) {
-      if (userKeywords.includes(kw)) {
-        allNotIncluded = false;
-        break;
-      }
-    }
-  
-    if (allNotIncluded) {
-      pool.query(
-        `UPDATE subscribers
-          SET tags = array_cat(tags, $1)
-          WHERE email = $2;`,
-        [classe_kw, email],
-        (err, results) => {
-          if (err) {
-            console.log("ERR ADD CLASSE KW " + email + ": " + err);
-            throw err;
-          } else {
-            console.log("SUCCESS ADD CLASSE KW TO " + email + ": " + classe_kw);
-          }
+  if (classe_kw != null && userKeywords == null) { // if userKeywords isn't null then account is already confirmed
+    pool.query(
+      `UPDATE subscribers
+        SET tags = array_cat(tags, $1)
+        WHERE email = $2;`,
+      [classe_kw, email],
+      (err, results) => {
+        if (err) {
+          console.log("ERR CONFIRMATION ADD CLASSE KW " + email + ": " + err);
+          throw err;
+        } else {
+          console.log("SUCCESS CONFIRMATION ADD CLASSE KW TO " + email + ": " + classe_kw);
         }
-      );
-    } else {
-      console.log("WARN ADD CLASSE KW " + email + ": " + classe_kw + " (already present)");
-    }
+      }
+    );
+  } else if(userKeywords != null){
+    console.log("WARN CONFIRMATION ADD CLASSE KW " + email + ", userKeywords (" + userKeywords + ") is not null, account is already confirmed");
   } else {
-    console.log("WARN ADD CLASSE KW " + email + ": " + classe_kw + " (userKeywords or classe_kw is null)");
+    console.log("WARN CONFIRMATION ADD CLASSE KW " + email + ": classe_kw (" + classe_kw + ") not found");
   }
 
   res.redirect("/login");
