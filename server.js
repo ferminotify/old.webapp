@@ -131,22 +131,38 @@ app.get("/users/register/confirmation/:id", async (req, res, next) => {
   // set classe kw
   let email = await getUserEmailWithTelegramID(userId);
   let classe_kw = await getUserClass(email);
+  let userKeywords = await getUserKeywords(email);
   
-  if(classe_kw != null) {
-    pool.query(
-      `UPDATE subscribers
-        SET tags = array_cat(tags, $1)
-        WHERE email = $2;`,
-      [classe_kw, email],
-      (err, results) => {
-        if (err) {
-          console.log("ERR ADD CLASSE KW " + email + ": " + err);
-          throw err;
-        }else{
-          console.log("SUCCESS ADD CLASSE KW TO " + email + ": " + classe_kw);
-        }
+  if (classe_kw != null && userKeywords != null) {
+    let allNotIncluded = true;
+  
+    for (const kw of classe_kw) {
+      if (userKeywords.includes(kw)) {
+        allNotIncluded = false;
+        break;
       }
-    );
+    }
+  
+    if (allNotIncluded) {
+      pool.query(
+        `UPDATE subscribers
+          SET tags = array_cat(tags, $1)
+          WHERE email = $2;`,
+        [classe_kw, email],
+        (err, results) => {
+          if (err) {
+            console.log("ERR ADD CLASSE KW " + email + ": " + err);
+            throw err;
+          } else {
+            console.log("SUCCESS ADD CLASSE KW TO " + email + ": " + classe_kw);
+          }
+        }
+      );
+    } else {
+      console.log("WARN ADD CLASSE KW " + email + ": " + classe_kw + " (already present)");
+    }
+  } else {
+    console.log("WARN ADD CLASSE KW " + email + ": " + classe_kw + " (userKeywords or classe_kw is null)");
   }
 
   res.redirect("/login");
@@ -173,6 +189,8 @@ async function getUserClass(email){
   var fermiapi_getClass_url = `https://fermiapi.kliu.win/get-class?firstname=${name}&lastname=${lastname}`;
 
   let classe = await getClasse(fermiapi_getClass_url);
+
+  if(classe == null) return null;
 
   let classes = [];
 
