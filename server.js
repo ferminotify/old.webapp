@@ -126,14 +126,18 @@ app.get("/logout", (req, res, next) => {
 
 app.get("/users/register/confirmation/:id", async (req, res, next) => {
   let userId = req.params.id;
-  const a = await incrementNumberNotification(userId);
 
-  // set classe kw
   let email = await getUserEmailWithTelegramID(userId);
-  let classe_kw = await getUserClass(email);
-  let userKeywords = await getUserKeywords(email);
+  if(await getNumberNotification(email) > -1){
+    req.flash("error_msg", "Account già confermato! Fai il login per accedere.");
+    return res.redirect("/login");
+  }
+  const a = await incrementNumberNotification(userId);
   
-  if (classe_kw != null && userKeywords == null) { // if userKeywords isn't null then account is already confirmed
+  // set classe kw
+  let classe_kw = await getUserClass(email);
+  
+  if (classe_kw != null) { 
     pool.query(
       `UPDATE subscribers
         SET tags = array_cat(tags, $1)
@@ -148,8 +152,6 @@ app.get("/users/register/confirmation/:id", async (req, res, next) => {
         }
       }
     );
-  } else if(userKeywords != null){
-    console.log("WARN CONFIRMATION ADD CLASSE KW " + email + ", userKeywords (" + userKeywords + ") is not null, account is already confirmed");
   } else {
     console.log("WARN CONFIRMATION ADD CLASSE KW " + email + ": classe_kw (" + classe_kw + ") not found");
   }
@@ -717,6 +719,18 @@ async function incrementNumberNotification(telegramId){
     return RES;
   } catch (err) {
     console.log("ERR ADD NORIFICATIONS " + telegramId + ": " + err.stack);
+  }
+}
+
+async function getNumberNotification(email){
+  try{
+    const RES = await pool.query(
+      `SELECT notifications FROM subscribers
+        WHERE email = '${email}'`,
+    );
+    return RES.rows[0].notifications;
+  } catch (err) {
+    console.log("ERR GET NUMBER NOTIFICATIONS " + email + ": " + err.stack);
   }
 }
 
