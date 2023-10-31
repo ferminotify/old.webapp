@@ -141,7 +141,7 @@ label {
     flex-direction: column;
 }
 
-.gender-select {
+select {
     width: 100%;
     padding: 15px;
     margin: 5px 0 0 0;
@@ -153,7 +153,7 @@ label {
     color: #000;
 }
 
-.gender-select:focus {
+select:focus {
     outline-color: var(--primary-color);
     background-color: #fff;
 }

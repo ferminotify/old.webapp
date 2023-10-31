@@ -109,7 +109,8 @@ app.get("/dashboard", checkNotAuthenticated, async (req, res) => {
     tgun: telegram,
     n_not: notifications,
     gender: gender,
-    n_pref: notificationPreferences
+    n_pref: notificationPreferences,
+    email: req.user.email,
   });
 });
 
@@ -551,6 +552,38 @@ app.post(
     failureFlash: true
   })
 );
+
+app.post("/user/edit", async function (req, res) {
+  try { var email = req.user.email; } catch (error) { console.log("ERR EDIT: " + error); return res.redirect("/dashboard"); }
+  var name = req.body.firstname || await getUserName(email);
+  var surname = req.body.lastname || await getUserLastName(email);
+  var gender = req.body.gender !== undefined && req.body.gender.length === 1 ? req.body.gender : await getUserGender(email);
+
+  name = name.trim();
+  surname = surname.trim();
+
+  if(name.length > 50 || surname.length > 50) {
+    console.log("ERR EDIT " + email + ": name or surname too long");
+    req.flash("error_msg", "Si è verificato un errore! Riprova più tardi.");
+    return res.redirect("/dashboard");
+  }
+
+  try {
+    await pool.query(
+      `UPDATE subscribers
+      SET name = $1, surname = $2, gender = $3
+      WHERE email = $4`,
+      [name, surname, gender, email]
+    );
+
+    console.log(`SUCCESS EDIT ${email}: new firstname = ${name}; new lastname = ${surname}; new gender = ${gender}`);
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.log('ERR EDIT' + email + ": " + error);
+    req.flash("error_msg", "Si è verificato un errore! Riprova più tardi.");
+    res.redirect("/dashboard");
+  }
+});
 
 /* api for the planning of future events */
 app.post(

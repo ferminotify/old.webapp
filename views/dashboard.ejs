@@ -56,6 +56,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3511194049429500" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function(){ writeUserName(); writeUserGender(); });
+        var USER_FIRSTNAME = "<%= user %>";
+        var USER_LASTNAME = "<%= lastname %>";
+        var USER_GENDER = "<%= gender %>";
+        function writeUserName(){
+            $(".user-name").html(USER_FIRSTNAME);
+        }
+        function writeUserGender(){
+            switch(USER_GENDER){
+                case 'M':
+                    $(".user-gender-o-a").html("o");
+                    break;
+                case 'F':
+                    $(".user-gender-o-a").html("a");
+                    break;
+                default:
+                    $("user-gender-o-a").html("ǝ");
+                    break;
+            }
+        }
+    </script>
     
 </head>
 <body>
@@ -85,9 +108,9 @@
 
     <div class="content minHeight-100vh dashboard">
         <div class="section">
-            <h1 class="firstTitle">Dashboard di <%= user %></h1>
+            <h1 class="firstTitle">Dashboard di <span class="user-name"></span></h1>
 
-            <h2 style="margin-bottom: 25px; color:#fff"><span id="greeting"></span> <span class="highlighted-text"><%= user %></span>,</h2>
+            <h2 style="margin-bottom: 25px; color:#fff"><span id="greeting"></span> <span class="highlighted-text"><span class="user-name"></span></span>,</h2>
 
             <p class="sub-description"><i class="fa-solid fa-triangle-exclamation"></i> Il sistema non è ufficialmente riconosciuto dalla presidenza dell'Istituto Superiore "Enrico Fermi" di Mantova. Eventuali malfunzionamenti sono a carico dello staff e non sono valide giustificazioni in uffici di segreteria e presidenza.</p>
         </div>
@@ -131,7 +154,7 @@
 
                 <p class="sub-description" id="maggioriInfo"><i class="fa-solid fa-circle-info"></i> <span style="text-decoration: underline; text-decoration-color: var(--primary-color)">Maggiori informazioni</span></p>
                 <ul class="keywords-info" id="keywordsInfo" style="display: none;">
-                    <li>Aggiungi le parole chiave alla lista per essere notificat<%= gender=='M' ?'o':(gender=='F' ?'a':'ǝ') %> quando è presente un evento che la riguarda nel calendario giornaliero. Ti consigliamo di inserire la tua classe e il tuo cognome.</li>
+                    <li>Aggiungi le parole chiave alla lista per essere notificat<span class="user-gender-o-a"></span> quando è presente un evento che la riguarda nel calendario giornaliero. Ti consigliamo di inserire la tua classe e il tuo cognome.</li>
                     <li>Per rimuovere una parola chiave, reinseriscila o clicca sul bottone <i class="fa-solid fa-pen-to-square"></i>.</li>
                     <li>Per pi&ugrave; informazioni, visita il <a href="./faq" style="text-decoration:underline">FAQ</a>.</li>
                 </ul>
@@ -226,7 +249,7 @@
             <h2 class="bigSectionTitle"><i class="fa-brands fa-telegram"></i> Telegram</h2>
             <% if (tgun.charAt(0)==='X' ) { %>
                 <p style="margin-bottom: 20px">Ricevi la notifica tramite messaggio su Telegram.</p>
-                <p>Per essere notificat<%= gender=='M' ?'o':(gender=='F' ?'a':'ǝ') %> su Telegram, manda
+                <p>Per essere notificat<span class="user-gender-o-a"></span> su Telegram, manda
                 </p>
                 <p onclick="copy()" class="telegramCodeContainer"><i class="fa-solid fa-copy"></i> <span
                         id="telegramCode"><code><%= tgun %></code></span> <span id="copied">Copiato!</span>
@@ -342,6 +365,213 @@
                 }
             </script>
         </div>
+        <!------------------>
+
+        <!-- Info -->
+        <div class="section info">
+            <h2 class="bigSectionTitle"><i class="fa-solid fa-user"></i> Le tue info</h2>
+            <!--form method="POST" action="/user/edit"-->
+            <div class="inputs">
+                <label>Nome</label>
+                <div class="flex-center-y">
+                    <input type="text" autocomplete="off" name="firstname" placeholder="<%= user %>" class="info-input" disabled required maxlength="50">
+                    <div class="info-edit-btn-container">
+                        <div class="info-toEdit-btns info-toEdit-btns-firstname flex-center-y">
+                            <i class="fa-solid fa-pen info-edit-btn-firstname" onclick="editInfo('firstname')"></i>
+                            <div class="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        </div>
+                        <div class="info-editing-btns info-editing-btns-firstname">
+                            <i class="fa-solid fa-xmark" onclick="stopEdit('firstname')"></i>
+                            <i class="fa-solid fa-check" onclick="stopEdit('firstname')"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inputs">
+                <label>Cognome</label>
+                <div class="flex-center-y">
+                    <input type="text" autocomplete="off" name="lastname" placeholder="<%= lastname %>" class="info-input" disabled required maxlength="50">
+                    <div class="info-edit-btn-container">
+                        <div class="info-toEdit-btns info-toEdit-btns-lastname flex-center-y">
+                            <i class="fa-solid fa-pen info-edit-btn-lastname" onclick="editInfo('lastname')"></i>
+                            <div class="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        </div>
+                        <div class="info-editing-btns info-editing-btns-lastname">
+                            <i class="fa-solid fa-xmark" onclick="stopEdit('lastname')"></i>
+                            <i class="fa-solid fa-check" onclick="stopEdit('lastname')"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inputs gender">
+                <label for="Gender">Genere</label>
+                <div class="flex-center-y">
+                    <select class="info-gender-select" name="gender" disabled>
+                        <option id="F" value="F">Donna (F)</option>
+                        <option id="M" value="M">Uomo (M)</option>
+                        <option id="X" value="X">Altro (ǝ)</option>
+                    </select>
+                    <div class="info-edit-btn-container">
+                        <div class="info-toEdit-btns info-toEdit-btns-gender flex-center-y">
+                            <i class="fa-solid fa-pen info-edit-btn-gender" onclick="editInfo('gender')"></i>
+                            <div class="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        </div>
+                        <div class="info-editing-btns info-editing-btns-gender">
+                            <i class="fa-solid fa-xmark" onclick="stopEdit('gender')"></i>
+                            <i class="fa-solid fa-check" onclick="stopEdit('gender');"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inputs">
+                <label>Email</label>
+                <div class="flex-center-y">
+                    <input type="text" autocomplete="off" name="email" placeholder="<%= email %>" class="info-input" disabled required>
+                    <div class="info-edit-btn-container">
+                        <!--
+                        <i class="fa-solid fa-pen info-edit-btn-email" onclick="editInfo('email')"></i>
+                        <div class="info-editing-btns info-editing-btns-email">
+                            <i class="fa-solid fa-xmark" onclick="stopEdit('email')"></i>
+                            <button type="submit"><i class="fa-solid fa-check"></i></button>
+                        </div>
+                        -->
+                    </div>
+                </div>
+            </div>
+            <!--/form-->
+        </div>
+        <script>
+            $(document).ready(function() {
+                $('.info-input').on('focus', function() {
+                    var placeholderValue = $(this).attr('placeholder');
+                    if($(this).val() == ''){
+                        $(this).val(placeholderValue);
+                    }
+                    $(this).addClass('info-input-active');
+
+                    $('.info-edit-btn-' + $(this).attr('name')).css('display', 'none');
+                    $('.info-editing-btns-' + $(this).attr('name')).css('display', 'flex');
+                });
+                $('.info-input').on('blur', function() {
+                    var inputValue = $(this).val();
+                    if(inputValue == $(this).attr('placeholder')){
+                        stopEdit($(this).attr('name'));
+                    }else{
+                        $(this).addClass('inserted');
+                    }
+                    $(this).removeClass('info-input-active');
+                });
+                document.getElementsByClassName('info-gender-select')[0].onchange = (event) => {
+                    var selected = event.target.value;
+                    if(selected != USER_GENDER){
+                        $(".info-editing-btns-gender i.fa-check").attr("onclick","updateInfo('gender');");
+                        $(".info-gender-select").addClass("inserted");
+                    }else{
+                        $(".info-editing-btns-gender i.fa-check").attr("onclick", "stopEdit('gender');");
+                        $(".info-gender-select").removeClass("inserted");
+                    }
+                }
+                $('.info-input').on('input', function() {
+                    var inputValue = $(this).val();
+                    var placeholderValue = $(this).attr('placeholder');
+                    if(inputValue != placeholderValue){
+                        $(".info-editing-btns-" + $(this).attr('name')).find("i.fa-check").attr("onclick", "updateInfo('" + $(this).attr('name') + "');");
+                    }else{
+                        $(".info-editing-btns-" + $(this).attr('name')).find("i.fa-check").attr("onclick", "stopEdit('" + $(this).attr('name') + "');");
+                    }
+                });
+            });
+
+            function editInfo(name){
+                if(name == "gender"){
+                    $("select[name='gender']").prop("disabled", false);
+                    $("select[name='gender']").focus();
+                    $(".info-edit-btn-gender").css("display", "none");
+                    $(".info-editing-btns-gender").css("display", "flex");
+                    return;
+                }
+                $('input[name="' + name + '"]').prop("disabled", false);
+                $('input[name="' + name + '"]').focus();
+            }
+
+            function stopEdit(name){
+                if(name == "gender"){
+                    document.getElementsByClassName('info-gender-select')[0].value = USER_GENDER;
+                    $(".info-editing-btns-gender").css("display", "none");
+                    $("select[name='gender']").prop("disabled", true);
+                    $(".info-edit-btn-gender").css("display", "flex")
+                    return;
+                }
+                $('input[name="' + name + '"]').val('');
+                $('.info-edit-btn-' + name).css('display', 'flex');
+                $('.info-editing-btns-' + name).css('display', 'none');
+                $('input[name="' + name + '"]').prop("disabled", true);
+                $('input[name="' + name + '"]').removeClass('inserted');
+            }
+
+            document.getElementsByClassName('info-gender-select')[0].value = USER_GENDER;
+
+            // simulate java concurrent semaphore
+            var isUpdating = false;
+            function waitUpdate() {
+                return new Promise(resolve => {
+                    const checkUpdate = () => {
+                        if (!isUpdating) resolve();
+                        else setTimeout(checkUpdate, 500); // check every half second if is released
+                    };
+                    checkUpdate();
+                });
+            }
+
+            async function updateInfo(name){
+                var inputUpdateValue = $('input[name="' + name + '"]').val() !== undefined ? $('input[name="' + name + '"]').val() : $('select[name="' + name + '"]').val();
+                inputUpdateValue = inputUpdateValue.trim();
+                if(inputUpdateValue == "" || inputUpdateValue == $('input[name="' + name + '"]').attr('placeholder') || (name == "gender" && inputUpdateValue == USER_GENDER)){
+                    stopEdit(name);
+                    return;
+                }
+                stopEdit(name);
+                $(".info-toEdit-btns-" + name + " i.fa-pen").css("display", "none");
+                $(".info-toEdit-btns-" + name + " .lds-grid").css("display", "inline-block");
+                await waitUpdate();
+                isUpdating = true;
+                $.ajax({
+                    type: "POST",
+                    url: "/user/edit",
+                    data: {
+                        [name]: inputUpdateValue
+                    },
+                    success: function(response) {
+                        if(name == "gender"){
+                            document.getElementsByClassName('info-gender-select')[0].value = inputUpdateValue;
+                            USER_GENDER = inputUpdateValue;
+                            writeUserGender();
+                        }else{
+                            $('input[name="' + name + '"]').attr("placeholder", inputUpdateValue);
+                            if(name == "firstname") USER_FIRSTNAME = inputUpdateValue;
+                            else if(name == "lastname") USER_LASTNAME = inputUpdateValue;
+                            writeUserName();
+                            if(name != "gender") getRecommendedKeywords();
+                        }
+                        $(".info-toEdit-btns-" + name + " i.fa-pen").css("display", "block");
+                        $(".info-toEdit-btns-" + name + " .lds-grid").css("display", "none");
+                        isUpdating = false;
+                    },
+                    error: function (error) {
+                        var div = document.createElement("div");
+                        div.id = "alertbanner";
+                        div.className = "errorbanner showAlert";
+                        div.setAttribute("onclick", "this.classList.remove('showAlert'); this.classList.add('hideAlert')");
+                        div.innerHTML = "<ul style=\"list-style: none; padding-left: 0;\"><li id=\"alertmessage\"><i class=\"fa-solid fa-circle-exclamation\"></i> (" + error.status +") Si è verificato un errore! Riprova più tardi.</li></ul>";
+                        document.body.appendChild(div);
+                        console.warn(error);
+                        $(".info-toEdit-btns-" + name + " i.fa-pen").css("display", "block");
+                        $(".info-toEdit-btns-" + name + " .lds-grid").css("display", "none");
+                        isUpdating = false;
+                    },
+                });
+            }
+        </script>
         <!------------------>
 
         <!-- Notifiche -->
@@ -473,7 +703,6 @@
                     const data = await response.text();
                     printEvents(data);
                 } catch (error) {
-                    console.error("Merda.\n" + error.stack);
                     // print error in the page
                     $("#events").append("<div class='error-container'><p class='errorText'><span class='errorTitle'>Errore nel caricamento degli eventi</span> <span class='errorRetry btn-nobg' onclick='events()'><span class='material-symbols-outlined'>autorenew</span> <span>Riprova</span></span></p><p class='errorDescription'>[ " + error.stack + " ]<br><a href='mailto:master@ferminotify.me?subject=Errore caricamento eventi&body=Ciao,%0D%0AHo riscontrato questo errore durante il caricamento degli eventi%0D%0A%0D%0A" + error.stack + "%0D%0A%0D%0Acon le keywords:%0D%0A" + keywords + ".%0D%0A%0D%0A%0D%0A" + moment().format("HH:mm DD/MM/YYYY") + "' style='margin-left: 5px;'><i class='fa-solid fa-circle-exclamation'></i> Clicca qui per segnalare il problema</a><br>master@ferminotify.me</p></div>");
                     $("#events-loading").hide();
@@ -740,9 +969,11 @@
         async function getRecommendedKeywords(){
             var recommendedKeywords = [];
             var recommendedKeywordsBox = document.getElementById("recommended-keywords");
+            recommendedKeywordsBox.innerHTML = "";
+            document.getElementById("recommended-keywords-paragraph").style.display = "none";
 
             // GET LAST NAME 
-            var lastname = "<%= locals.lastname %>".toUpperCase().replace(/\s+/g, ' ').trim();
+            var lastname = USER_LASTNAME.toUpperCase().replace(/\s+/g, ' ').trim();
             // IF LAST NAME EXISTS from api
             if(await lastnameExists(lastname)){
                 console.log("lastname: " + lastname);
@@ -752,7 +983,7 @@
             }
 
             // GET CLASSE
-            var name = "<%= locals.user %>".toUpperCase().replace(/\s+/g, ' ').trim();
+            var name = USER_FIRSTNAME.toUpperCase().replace(/\s+/g, ' ').trim();
             var fermiapi_getClass_url = `https://fermiapi.kliu.win/get-class?firstname=${name}&lastname=${lastname}`;
             var classe = await getClasse(fermiapi_getClass_url);
             let classes = [];
@@ -771,7 +1002,7 @@
             });
 
             // divide kw with commas
-            var recommendedKeywordsOutput = `<span class="highlight-hover" style="cursor:pointer;font-weight:700" onclick="addRecommendedKeyword(this.querySelector('span'))"><i class="fa-solid fa-square-plus"></i> <span>${recommendedKeywords.join('</span></span>, <span class="highlight-hover" style="cursor:pointer;font-weight:700"  onclick="addRecommendedKeyword(this.querySelector(\'span\'))"><i class="fa-solid fa-square-plus"></i> <span>')}</span></span>`;
+            var recommendedKeywordsOutput = `<span class="highlight-hover" style="cursor:pointer;font-weight:600" onclick="addRecommendedKeyword(this.querySelector('span'))"><i class="fa-solid fa-square-plus"></i> <span>${recommendedKeywords.join('</span></span>, <span class="highlight-hover" style="cursor:pointer;font-weight:600"  onclick="addRecommendedKeyword(this.querySelector(\'span\'))"><i class="fa-solid fa-square-plus"></i> <span>')}</span></span>`;
             recommendedKeywordsBox.innerHTML = recommendedKeywordsOutput;
 
             if(recommendedKeywords.length > 0) document.getElementById("recommended-keywords-paragraph").style.display = "block";
@@ -790,10 +1021,5 @@
     </script>
 
 </body>
-
-<!-- preload img -->
-<div id="preloadedImages" style="display: none;">
-    <img src="/img/loading.gif">
-</div>
 
 </html>
