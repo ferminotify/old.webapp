@@ -72,11 +72,11 @@ app.get("/faq", (req, res) => {
   res.render("faq.ejs", { isLogged: req.isAuthenticated() });
 });
 
-app.get("/feedback", checkAuthenticated, (req, res) => {
+app.get("/feedback", (req, res) => {
   res.render("forms/feedback.ejs", { isLogged: req.isAuthenticated() });
 });
 
-app.get("/recruiting", checkAuthenticated, (req, res) => {
+app.get("/recruiting", (req, res) => {
   res.render("forms/recruiting.ejs", { isLogged: req.isAuthenticated() });
 });
 
