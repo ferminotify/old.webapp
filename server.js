@@ -593,6 +593,12 @@ app.post(
     res.json({ id: id,  my_kw: kw });
 });
 
+// status check
+app.get("/status", async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send("OK");
+});
+
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return res.redirect("/dashboard");
